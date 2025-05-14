@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import StatsCard from '@/components/Dashboard/StatsCard';
@@ -7,13 +6,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { AreaChart, BarChart } from '@/components/ui/chart';
 import { ResponsiveContainer } from 'recharts';
 import { Badge } from '@/components/ui/badge';
 import { Calendar as CalendarIcon, Clock, Users, FileText, DollarSign, Shield, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SOAPNotesGenerator from '@/components/AI/SOAPNotesGenerator';
 import CalendarIntegration from '@/components/Appointments/CalendarIntegration';
+import { AreaChart, BarChart } from '@/components/Dashboard/Charts';
 
 const areaChartData = [
   {
@@ -236,33 +235,29 @@ const Dashboard = () => {
             title="Total Patients" 
             value="2,840" 
             description="154 new this month"
-            trend="up"
-            trendValue="12%"
-            icon={<Users className="h-4 w-4" />}
+            trend={{ value: 12, isPositive: true }}
+            icon={<Users />}
           />
           <StatsCard 
             title="Appointments" 
             value="120" 
             description="32 scheduled today"
-            trend="up"
-            trendValue="8%"
-            icon={<CalendarIcon className="h-4 w-4" />}
+            trend={{ value: 8, isPositive: true }}
+            icon={<CalendarIcon />}
           />
           <StatsCard 
             title="Average Wait Time" 
             value="8.4 min" 
             description="2.1 min lower than last month"
-            trend="down"
-            trendValue="18%"
-            icon={<Clock className="h-4 w-4" />}
+            trend={{ value: 18, isPositive: false }}
+            icon={<Clock />}
           />
           <StatsCard 
             title="Revenue" 
             value="$24,315" 
             description="$4,142 more than last month"
-            trend="up"
-            trendValue="20%"
-            icon={<DollarSign className="h-4 w-4" />}
+            trend={{ value: 20, isPositive: true }}
+            icon={<DollarSign />}
           />
         </div>
         

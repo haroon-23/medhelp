@@ -2,12 +2,13 @@
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
+import React from 'react';
 
 interface StatsCardProps {
   title: string;
   value: string | number;
   description?: string;
-  icon?: LucideIcon;
+  icon?: React.ReactElement;
   trend?: {
     value: number;
     isPositive: boolean;
@@ -19,7 +20,7 @@ const StatsCard = ({
   title,
   value,
   description,
-  icon: Icon,
+  icon,
   trend,
   className,
 }: StatsCardProps) => {
@@ -28,9 +29,9 @@ const StatsCard = ({
       <div className="p-6">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
-          {Icon && (
+          {icon && (
             <div className="p-2 bg-primary/10 rounded-full">
-              <Icon className="h-5 w-5 text-primary" />
+              {React.cloneElement(icon, { className: "h-5 w-5 text-primary" })}
             </div>
           )}
         </div>
