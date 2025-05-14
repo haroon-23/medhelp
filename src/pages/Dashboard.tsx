@@ -1,191 +1,361 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import StatsCard from '@/components/Dashboard/StatsCard';
 import PatientSummary from '@/components/Dashboard/PatientSummary';
-import { Activity, Calendar, Clock, FileCheck, User, Users } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { AreaChart, BarChart } from '@/components/ui/chart';
+import { ResponsiveContainer } from 'recharts';
+import { Badge } from '@/components/ui/badge';
+import { Calendar as CalendarIcon, Clock, Users, FileText, DollarSign, Shield, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import SOAPNotesGenerator from '@/components/AI/SOAPNotesGenerator';
+import CalendarIntegration from '@/components/Appointments/CalendarIntegration';
 
-// Mock data for charts
-const weeklyAppointmentsData = [
-  { name: 'Mon', appointments: 14 },
-  { name: 'Tue', appointments: 19 },
-  { name: 'Wed', appointments: 16 },
-  { name: 'Thu', appointments: 21 },
-  { name: 'Fri', appointments: 18 },
-  { name: 'Sat', appointments: 8 },
-  { name: 'Sun', appointments: 0 },
+const areaChartData = [
+  {
+    date: '01/23',
+    patients: 12,
+  },
+  {
+    date: '02/23',
+    patients: 15,
+  },
+  {
+    date: '03/23',
+    patients: 19,
+  },
+  {
+    date: '04/23',
+    patients: 18,
+  },
+  {
+    date: '05/23',
+    patients: 15,
+  },
+  {
+    date: '06/23',
+    patients: 21,
+  },
+  {
+    date: '07/23',
+    patients: 18,
+  },
+  {
+    date: '08/23',
+    patients: 23,
+  },
+  {
+    date: '09/23',
+    patients: 25,
+  },
+  {
+    date: '10/23',
+    patients: 27,
+  },
+  {
+    date: '11/23',
+    patients: 32,
+  },
+  {
+    date: '12/23',
+    patients: 30,
+  },
+];
+
+const barChartData = [
+  {
+    name: 'Mon',
+    total: 12,
+  },
+  {
+    name: 'Tue',
+    total: 18,
+  },
+  {
+    name: 'Wed',
+    total: 16,
+  },
+  {
+    name: 'Thu',
+    total: 14,
+  },
+  {
+    name: 'Fri',
+    total: 19,
+  },
+  {
+    name: 'Sat',
+    total: 8,
+  },
+  {
+    name: 'Sun',
+    total: 4,
+  },
+];
+
+interface Appointment {
+  id: string;
+  patient: string;
+  date: Date;
+  time: string;
+  type: string;
+  status: 'scheduled' | 'completed' | 'cancelled';
+}
+
+const todaysAppts: Appointment[] = [
+  {
+    id: '1',
+    patient: 'John Doe',
+    date: new Date(),
+    time: '09:00 AM',
+    type: 'Check-up',
+    status: 'scheduled',
+  },
+  {
+    id: '2',
+    patient: 'Jane Smith',
+    date: new Date(),
+    time: '10:30 AM',
+    type: 'Follow-up',
+    status: 'scheduled',
+  },
+  {
+    id: '3',
+    patient: 'Robert Johnson',
+    date: new Date(),
+    time: '01:15 PM',
+    type: 'Consultation',
+    status: 'scheduled',
+  },
 ];
 
 const Dashboard = () => {
-  return (
-    <AppLayout title="Dashboard">
-      <div className="grid gap-6">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard 
-            title="Total Patients" 
-            value="1,248" 
-            description="Active patient records" 
-            icon={Users}
-            trend={{ value: 12, isPositive: true }}
-          />
-          <StatsCard 
-            title="Appointments Today" 
-            value="24" 
-            description="8 completed, 16 remaining" 
-            icon={Calendar}
-            trend={{ value: 5, isPositive: true }}
-          />
-          <StatsCard 
-            title="Avg. Wait Time" 
-            value="14 min" 
-            description="2 min decrease from last week" 
-            icon={Clock}
-            trend={{ value: 8, isPositive: true }}
-          />
-          <StatsCard 
-            title="Completed Records" 
-            value="18" 
-            description="Medical records updated today" 
-            icon={FileCheck}
-            trend={{ value: 3, isPositive: false }}
-          />
-        </section>
-        
-        <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <PatientSummary />
+  const [date, setDate] = useState<Date>(new Date());
+  const [userRole, setUserRole] = useState<string>('admin');
+  
+  useEffect(() => {
+    const storedRole = localStorage.getItem('userRole');
+    if (storedRole) {
+      setUserRole(storedRole);
+    }
+  }, []);
+
+  const renderAIFeatures = () => {
+    if (userRole === 'admin' || userRole === 'doctor') {
+      return (
+        <>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <SOAPNotesGenerator />
+            <CalendarIntegration />
+          </div>
           
-          <Card className="xl:col-span-1">
-            <CardHeader>
-              <CardTitle className="text-md font-medium">Weekly Appointments</CardTitle>
-              <CardDescription>Appointment distribution for current week</CardDescription>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div className="space-y-1">
+                <CardTitle className="text-2xl font-bold tracking-tight">AI Features</CardTitle>
+                <CardDescription>
+                  Powered by MediSecure AI Assistant
+                </CardDescription>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                  Active
+                </Badge>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="h-[230px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={weeklyAppointmentsData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="appointments" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className="grid gap-4 md:grid-cols-3">
+                <Card className="bg-muted/50">
+                  <CardHeader className="pb-2">
+                    <div className="p-2 w-10 h-10 bg-primary/10 rounded-lg mb-2">
+                      <Bot className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-md">SOAP Notes</CardTitle>
+                    <CardDescription className="text-xs">
+                      AI-generated clinical notes
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="pt-0">
+                    <Button variant="ghost" size="sm" className="w-full text-xs">
+                      Generate Notes
+                    </Button>
+                  </CardFooter>
+                </Card>
+                
+                <Card className="bg-muted/50">
+                  <CardHeader className="pb-2">
+                    <div className="p-2 w-10 h-10 bg-primary/10 rounded-lg mb-2">
+                      <Bot className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-md">Patient Q&A</CardTitle>
+                    <CardDescription className="text-xs">
+                      Answer staff questions
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="pt-0">
+                    <Button variant="ghost" size="sm" className="w-full text-xs">
+                      View Questions
+                    </Button>
+                  </CardFooter>
+                </Card>
+                
+                <Card className="bg-muted/50">
+                  <CardHeader className="pb-2">
+                    <div className="p-2 w-10 h-10 bg-primary/10 rounded-lg mb-2">
+                      <Bot className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-md">Voice Bot</CardTitle>
+                    <CardDescription className="text-xs">
+                      Call analytics & transcription
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="pt-0">
+                    <Button variant="ghost" size="sm" className="w-full text-xs">
+                      View Analytics
+                    </Button>
+                  </CardFooter>
+                </Card>
               </div>
             </CardContent>
           </Card>
-        </section>
+        </>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <AppLayout title="Dashboard">
+      <div className="grid gap-6">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <StatsCard 
+            title="Total Patients" 
+            value="2,840" 
+            description="154 new this month"
+            trend="up"
+            trendValue="12%"
+            icon={<Users className="h-4 w-4" />}
+          />
+          <StatsCard 
+            title="Appointments" 
+            value="120" 
+            description="32 scheduled today"
+            trend="up"
+            trendValue="8%"
+            icon={<CalendarIcon className="h-4 w-4" />}
+          />
+          <StatsCard 
+            title="Average Wait Time" 
+            value="8.4 min" 
+            description="2.1 min lower than last month"
+            trend="down"
+            trendValue="18%"
+            icon={<Clock className="h-4 w-4" />}
+          />
+          <StatsCard 
+            title="Revenue" 
+            value="$24,315" 
+            description="$4,142 more than last month"
+            trend="up"
+            trendValue="20%"
+            icon={<DollarSign className="h-4 w-4" />}
+          />
+        </div>
         
-        <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <Card className="xl:col-span-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-md font-medium">Recent Activity</CardTitle>
-              <CardDescription>System logs and user actions</CardDescription>
+              <CardTitle>Patient Growth</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-4">
-                {[
-                  {
-                    action: "Patient record updated",
-                    user: "Dr. Sarah Johnson",
-                    time: "10 minutes ago",
-                    icon: FileCheck
-                  },
-                  {
-                    action: "New appointment scheduled",
-                    user: "Nurse Michael Rodriguez",
-                    time: "25 minutes ago",
-                    icon: Calendar
-                  },
-                  {
-                    action: "Lab results uploaded",
-                    user: "Lab Tech Jamie Smith",
-                    time: "1 hour ago",
-                    icon: Activity
-                  },
-                  {
-                    action: "New patient registered",
-                    user: "Receptionist Lisa Wong",
-                    time: "2 hours ago",
-                    icon: User
-                  },
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start space-x-3">
-                    <div className="p-2 bg-primary/10 rounded-full">
-                      <item.icon className="h-4 w-4 text-primary" />
-                    </div>
-                    <div className="space-y-0.5">
-                      <p className="text-sm font-medium">{item.action}</p>
-                      <div className="flex items-center text-xs text-muted-foreground">
-                        <span>{item.user}</span>
-                        <span className="mx-1">•</span>
-                        <span>{item.time}</span>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart 
+                  data={areaChartData} 
+                  categories={['patients']} 
+                  colors={['blue']} 
+                />
+              </ResponsiveContainer>
             </CardContent>
           </Card>
-          
-          <Card className="xl:col-span-2">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-md font-medium">Upcoming Tasks</CardTitle>
-              <CardDescription>Scheduled tasks and reminders</CardDescription>
+              <CardTitle>Visits This Week</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-2">
-                {[
-                  {
-                    task: "Review lab results for Marcus Williams",
-                    priority: "High",
-                    dueDate: "Today, 2:00 PM"
-                  },
-                  {
-                    task: "Follow up with patient Lisa Johnson about medication",
-                    priority: "Medium",
-                    dueDate: "Today, 4:30 PM"
-                  },
-                  {
-                    task: "Complete medical certification for Robert Chen",
-                    priority: "Medium",
-                    dueDate: "Tomorrow, 10:00 AM"
-                  },
-                  {
-                    task: "Team meeting - Quarterly review",
-                    priority: "Low",
-                    dueDate: "Friday, 1:00 PM"
-                  },
-                  {
-                    task: "HIPAA compliance training session",
-                    priority: "High",
-                    dueDate: "Friday, 3:00 PM"
-                  }
-                ].map((task, i) => (
-                  <li key={i} className="flex items-center justify-between p-3 border rounded-md bg-background">
-                    <div>
-                      <p className="font-medium text-sm">{task.task}</p>
-                      <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                        <Clock className="mr-1 h-3 w-3" />
-                        <span>{task.dueDate}</span>
-                      </div>
-                    </div>
-                    <div className={cn(
-                      "px-2 py-1 rounded text-xs font-medium",
-                      task.priority === "High" ? "bg-red-50 text-red-700" :
-                      task.priority === "Medium" ? "bg-yellow-50 text-yellow-700" :
-                      "bg-green-50 text-green-700"
-                    )}>
-                      {task.priority}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart 
+                  data={barChartData} 
+                  categories={['total']} 
+                  colors={['blue']} 
+                />
+              </ResponsiveContainer>
             </CardContent>
           </Card>
-        </section>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle>Today's Appointments</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {todaysAppts.map((appt) => (
+                  <div key={appt.id} className="flex items-center p-3 border rounded-lg">
+                    <div className="mr-4 p-3 rounded-full bg-muted">
+                      <Users className="h-5 w-5 text-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium">{appt.patient}</p>
+                      <div className="flex text-xs text-muted-foreground">
+                        <span>{appt.time}</span>
+                        <span className="mx-2">•</span>
+                        <span>{appt.type}</span>
+                      </div>
+                    </div>
+                    <Badge 
+                      variant="outline" 
+                      className={cn(
+                        appt.status === 'scheduled' && 'border-blue-500 text-blue-700 bg-blue-50',
+                        appt.status === 'completed' && 'border-green-500 text-green-700 bg-green-50',
+                        appt.status === 'cancelled' && 'border-red-500 text-red-700 bg-red-50'
+                      )}
+                    >
+                      {appt.status.charAt(0).toUpperCase() + appt.status.slice(1)}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter className="border-t">
+              <Button variant="ghost" className="w-full">View All Appointments</Button>
+            </CardFooter>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Calendar</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={(selectedDate) => selectedDate && setDate(selectedDate)}
+                className="w-full"
+              />
+            </CardContent>
+            <CardFooter className="border-t">
+              <Button variant="ghost" className="w-full">View Schedule</Button>
+            </CardFooter>
+          </Card>
+        </div>
+        
+        <PatientSummary />
+        
+        {renderAIFeatures()}
       </div>
     </AppLayout>
   );

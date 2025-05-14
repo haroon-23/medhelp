@@ -3,58 +3,60 @@ import React from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { FileText, Plus, Search, Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { FileText, Search, Filter, Plus, Calendar, User, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const MedicalRecords = () => {
-  const mockPatientRecords = [
+  // Sample data for patients' medical records
+  const records = [
     {
-      id: 'REC-001',
-      patientName: 'John Doe',
-      patientId: 'PAT-1248',
-      recordType: 'Lab Results',
-      date: '2025-05-10',
+      id: 'MR-001',
+      patient: 'John Doe',
+      dateCreated: '2025-05-10',
+      lastUpdated: '2025-05-14',
+      recordType: 'Consultation',
       doctor: 'Dr. Sarah Johnson',
-      status: 'Reviewed'
+      status: 'Complete'
     },
     {
-      id: 'REC-002',
-      patientName: 'Emily Wilson',
-      patientId: 'PAT-1249',
+      id: 'MR-002',
+      patient: 'Emily Wilson',
+      dateCreated: '2025-05-08',
+      lastUpdated: '2025-05-13',
+      recordType: 'Lab Results',
+      doctor: 'Dr. Sarah Johnson',
+      status: 'Pending Review'
+    },
+    {
+      id: 'MR-003',
+      patient: 'Robert Brown',
+      dateCreated: '2025-05-05',
+      lastUpdated: '2025-05-12',
+      recordType: 'Surgery',
+      doctor: 'Dr. Michael Chen',
+      status: 'Complete'
+    },
+    {
+      id: 'MR-004',
+      patient: 'Maria Garcia',
+      dateCreated: '2025-05-03',
+      lastUpdated: '2025-05-11',
       recordType: 'Prescription',
-      date: '2025-05-09',
-      doctor: 'Dr. Michael Chen',
-      status: 'Pending'
-    },
-    {
-      id: 'REC-003',
-      patientName: 'Robert Brown',
-      patientId: 'PAT-1252',
-      recordType: 'Imaging',
-      date: '2025-05-08',
       doctor: 'Dr. Sarah Johnson',
-      status: 'Reviewed'
+      status: 'Active'
     },
     {
-      id: 'REC-004',
-      patientName: 'Maria Garcia',
-      patientId: 'PAT-1255',
-      recordType: 'Visit Notes',
-      date: '2025-05-07',
-      doctor: 'Dr. James Wilson',
-      status: 'Reviewed'
-    },
-    {
-      id: 'REC-005',
-      patientName: 'David Lee',
-      patientId: 'PAT-1260',
-      recordType: 'Lab Results',
-      date: '2025-05-06',
-      doctor: 'Dr. Michael Chen',
-      status: 'Pending'
+      id: 'MR-005',
+      patient: 'David Lee',
+      dateCreated: '2025-05-01',
+      lastUpdated: '2025-05-10',
+      recordType: 'Follow-up',
+      doctor: 'Dr. Lisa Rodriguez',
+      status: 'Scheduled'
     }
   ];
 
@@ -68,111 +70,89 @@ const MedicalRecords = () => {
               View and manage patient medical records
             </p>
           </div>
-          <Button className="gap-1">
-            <Plus className="h-4 w-4" />
-            New Record
-          </Button>
+          <div className="flex gap-2">
+            <Button className="gap-1">
+              <Plus className="h-4 w-4" />
+              New Record
+            </Button>
+            <Button variant="outline" className="gap-1">
+              <FileText className="h-4 w-4" />
+              Generate SOAP Notes
+            </Button>
+          </div>
         </div>
 
-        <Tabs defaultValue="all">
-          <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center">
+          <Tabs defaultValue="all" className="w-[400px]">
             <TabsList>
               <TabsTrigger value="all">All Records</TabsTrigger>
-              <TabsTrigger value="pending">Pending Review</TabsTrigger>
-              <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
+              <TabsTrigger value="recent">Recent</TabsTrigger>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
             </TabsList>
-            
-            <div className="flex gap-2">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search records..."
-                  className="pl-8 w-[250px]"
-                />
-              </div>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          <TabsContent value="all" className="space-y-4">
-            <Card>
-              <CardHeader className="px-6 py-4">
-                <div className="grid grid-cols-7 text-xs font-medium text-muted-foreground">
-                  <div>Record ID</div>
-                  <div>Patient</div>
-                  <div>Record Type</div>
-                  <div>Date</div>
-                  <div>Provider</div>
-                  <div>Status</div>
-                  <div>Actions</div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="divide-y">
-                  {mockPatientRecords.map((record) => (
-                    <div key={record.id} className="grid grid-cols-7 items-center px-6 py-4 hover:bg-muted/50">
-                      <div className="font-medium">{record.id}</div>
-                      <div>
-                        <div className="font-medium">{record.patientName}</div>
-                        <div className="text-xs text-muted-foreground">{record.patientId}</div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        <span>{record.recordType}</span>
-                      </div>
-                      <div>{record.date}</div>
-                      <div>{record.doctor}</div>
-                      <div>
-                        <span className={cn(
-                          "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
-                          record.status === "Reviewed" 
-                            ? "bg-green-50 text-green-700" 
-                            : "bg-yellow-50 text-yellow-700"
-                        )}>
-                          {record.status}
-                        </span>
-                      </div>
-                      <div>
-                        <Button variant="ghost" size="sm">View</Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="pending" className="space-y-4">
-            <Card>
-              <CardContent className="p-8 text-center">
-                <div className="flex justify-center mb-4">
-                  <FileText className="h-12 w-12 text-muted-foreground" />
-                </div>
-                <h3 className="text-lg font-medium">Pending Records</h3>
-                <p className="text-muted-foreground mt-2">
-                  View records that require your review
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          </Tabs>
           
-          <TabsContent value="reviewed" className="space-y-4">
-            <Card>
-              <CardContent className="p-8 text-center">
-                <div className="flex justify-center mb-4">
-                  <FileText className="h-12 w-12 text-muted-foreground" />
-                </div>
-                <h3 className="text-lg font-medium">Reviewed Records</h3>
-                <p className="text-muted-foreground mt-2">
-                  View records that have been reviewed
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          <div className="flex gap-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search records..."
+                className="pl-8 w-[250px]"
+              />
+            </div>
+            <Button variant="outline" size="icon">
+              <Filter className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Record ID</TableHead>
+                  <TableHead>Patient</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Date Created</TableHead>
+                  <TableHead>Last Updated</TableHead>
+                  <TableHead>Doctor</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {records.map((record) => (
+                  <TableRow key={record.id}>
+                    <TableCell className="font-medium">{record.id}</TableCell>
+                    <TableCell>{record.patient}</TableCell>
+                    <TableCell>{record.recordType}</TableCell>
+                    <TableCell>{record.dateCreated}</TableCell>
+                    <TableCell>{record.lastUpdated}</TableCell>
+                    <TableCell>{record.doctor}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          record.status === "Complete" && "border-green-500 text-green-700 bg-green-50",
+                          record.status === "Pending Review" && "border-yellow-500 text-yellow-700 bg-yellow-50",
+                          record.status === "Active" && "border-blue-500 text-blue-700 bg-blue-50",
+                          record.status === "Scheduled" && "border-purple-500 text-purple-700 bg-purple-50"
+                        )}
+                      >
+                        {record.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="sm">View</Button>
+                      <Button variant="ghost" size="sm">Edit</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     </AppLayout>
   );

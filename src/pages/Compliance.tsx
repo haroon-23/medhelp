@@ -2,275 +2,229 @@
 import React from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { Shield, CheckCircle, AlertCircle, FileCheck, Clock, Calendar } from 'lucide-react';
+import { Shield, CheckCircle, AlertCircle, Info, Clipboard, FileText, AlertTriangle, Download } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const Compliance = () => {
+  const complianceScore = 85;
+  const requiredItems = [
+    { id: 1, title: 'Privacy Policy', status: 'complete', description: 'Updated and compliant with HIPAA requirements' },
+    { id: 2, title: 'Security Risk Assessment', status: 'complete', description: 'Annual review completed' },
+    { id: 3, title: 'Employee Training', status: 'pending', description: '3 staff members need to complete training' },
+    { id: 4, title: 'Business Associate Agreements', status: 'complete', description: 'All vendors have signed BAAs' },
+    { id: 5, title: 'Breach Notification Plan', status: 'complete', description: 'Plan updated and tested' }
+  ];
+
+  const riskItems = [
+    { id: 1, title: 'Password Policy Compliance', severity: 'medium', description: 'Some accounts not meeting complexity requirements' },
+    { id: 2, title: 'Audit Logging', severity: 'low', description: 'Review audit logs more frequently' },
+    { id: 3, title: 'Encryption at Rest', severity: 'low', description: 'All systems using approved encryption' }
+  ];
+
   return (
     <AppLayout title="HIPAA Compliance">
       <div className="grid gap-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">HIPAA Compliance Center</h2>
+            <h2 className="text-3xl font-bold tracking-tight">HIPAA Compliance</h2>
             <p className="text-muted-foreground">
-              Monitor and manage your organization's HIPAA compliance
+              Monitor and manage your organization's HIPAA compliance status
             </p>
           </div>
-          <Button className="gap-1">
-            <FileCheck className="h-4 w-4" />
-            Run Compliance Check
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" className="gap-1">
+              <Download className="h-4 w-4" />
+              Export Report
+            </Button>
+            <Button className="gap-1">
+              <Shield className="h-4 w-4" />
+              Run Assessment
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-lg font-medium">Compliance Score</CardTitle>
-              <CardDescription>Overall HIPAA compliance status</CardDescription>
+              <CardDescription>Last updated: May 14, 2025</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex justify-center py-6">
-                <div className="relative h-36 w-36">
-                  <svg className="h-full w-full" viewBox="0 0 100 100">
+              <div className="flex flex-col items-center">
+                <div className="relative w-32 h-32 flex items-center justify-center rounded-full border-8 border-muted mb-4">
+                  <div className={cn(
+                    "text-2xl font-bold",
+                    complianceScore >= 90 ? "text-green-600" :
+                    complianceScore >= 70 ? "text-yellow-600" :
+                    "text-red-600"
+                  )}>
+                    {complianceScore}%
+                  </div>
+                  <svg className="absolute top-0 left-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
                     <circle
-                      className="text-muted stroke-current"
-                      strokeWidth="10"
-                      fill="transparent"
-                      r="40"
                       cx="50"
                       cy="50"
-                    />
-                    <circle
-                      className="text-green-500 stroke-current"
-                      strokeWidth="10"
+                      r="40"
+                      fill="none"
+                      stroke={complianceScore >= 90 ? "rgb(22 163 74)" :
+                              complianceScore >= 70 ? "rgb(202 138 4)" :
+                              "rgb(220 38 38)"}
+                      strokeWidth="8"
+                      strokeDasharray="251.2"
+                      strokeDashoffset={251.2 - (251.2 * complianceScore / 100)}
                       strokeLinecap="round"
-                      fill="transparent"
-                      r="40"
-                      cx="50"
-                      cy="50"
-                      strokeDasharray={2 * Math.PI * 40}
-                      strokeDashoffset={2 * Math.PI * 40 * (1 - 0.92)}
                     />
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-3xl font-bold">92%</span>
-                  </div>
+                </div>
+                <div className={cn(
+                  "text-sm font-medium rounded-full px-3 py-1",
+                  complianceScore >= 90 ? "bg-green-50 text-green-700" :
+                  complianceScore >= 70 ? "bg-yellow-50 text-yellow-700" :
+                  "bg-red-50 text-red-700"
+                )}>
+                  {complianceScore >= 90 ? "Excellent" :
+                   complianceScore >= 70 ? "Good" :
+                   "Needs Attention"}
                 </div>
               </div>
             </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">View Details</Button>
-            </CardFooter>
           </Card>
-
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-medium">Required Tasks</CardTitle>
+              <CardDescription>HIPAA compliance requirements</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="font-medium">Completed</div>
+                  <div className="text-sm">4/5</div>
+                </div>
+                <Progress value={80} className="h-2" />
+              </div>
+            </CardContent>
+          </Card>
+          
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-lg font-medium">Risk Assessment</CardTitle>
-              <CardDescription>Policy and security assessment</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm">Security Safeguards</span>
-                  <span className="text-sm font-medium">95%</span>
-                </div>
-                <Progress value={95} className="h-2" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm">Privacy Policies</span>
-                  <span className="text-sm font-medium">88%</span>
-                </div>
-                <Progress value={88} className="h-2" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm">Staff Training</span>
-                  <span className="text-sm font-medium">92%</span>
-                </div>
-                <Progress value={92} className="h-2" />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">Full Report</Button>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Upcoming Tasks</CardTitle>
-              <CardDescription>Compliance tasks to complete</CardDescription>
+              <CardDescription>Identified security risks</CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <div className="p-1.5 bg-yellow-50 text-yellow-600 rounded-full">
-                    <Clock className="h-4 w-4" />
+              <div className="flex flex-col items-center">
+                <div className="flex gap-4 mb-4">
+                  <div className="flex flex-col items-center">
+                    <div className="text-3xl font-bold text-green-600">1</div>
+                    <div className="text-xs text-muted-foreground">High</div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium">Staff HIPAA Training Update</p>
-                    <p className="text-xs text-muted-foreground">Due in 5 days</p>
+                  <div className="flex flex-col items-center">
+                    <div className="text-3xl font-bold text-yellow-600">1</div>
+                    <div className="text-xs text-muted-foreground">Medium</div>
                   </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="p-1.5 bg-green-50 text-green-600 rounded-full">
-                    <CheckCircle className="h-4 w-4" />
+                  <div className="flex flex-col items-center">
+                    <div className="text-3xl font-bold text-blue-600">2</div>
+                    <div className="text-xs text-muted-foreground">Low</div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium">Security Audit Complete</p>
-                    <p className="text-xs text-muted-foreground">Completed yesterday</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="p-1.5 bg-red-50 text-red-600 rounded-full">
-                    <AlertCircle className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Privacy Notice Update</p>
-                    <p className="text-xs text-muted-foreground">Overdue by 2 days</p>
-                  </div>
-                </li>
-              </ul>
+                </div>
+                <Button variant="outline" size="sm" className="w-full">
+                  View All Risks
+                </Button>
+              </div>
             </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">View All Tasks</Button>
-            </CardFooter>
           </Card>
         </div>
 
-        <Tabs defaultValue="policies">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="policies">Policies</TabsTrigger>
-            <TabsTrigger value="audit">Audit Logs</TabsTrigger>
-            <TabsTrigger value="training">Staff Training</TabsTrigger>
-            <TabsTrigger value="breaches">Breach Management</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="policies" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>HIPAA Policies and Procedures</CardTitle>
-                <CardDescription>
-                  Manage all your HIPAA-related policies and documentation
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[
-                    {
-                      title: "Privacy Policy",
-                      description: "Rules for handling PHI",
-                      lastUpdated: "April 15, 2025",
-                      status: "Up to date"
-                    },
-                    {
-                      title: "Security Policy",
-                      description: "Technical safeguards and controls",
-                      lastUpdated: "March 28, 2025",
-                      status: "Up to date"
-                    },
-                    {
-                      title: "Breach Notification",
-                      description: "Procedures for breach notification",
-                      lastUpdated: "February 12, 2025",
-                      status: "Review needed"
-                    },
-                    {
-                      title: "Business Associate Agreements",
-                      description: "Contracts with third parties",
-                      lastUpdated: "January 30, 2025",
-                      status: "Up to date"
-                    }
-                  ].map((policy, i) => (
-                    <div key={i} className="border rounded-lg p-4">
-                      <div className="flex justify-between mb-2">
-                        <h3 className="font-medium">{policy.title}</h3>
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          policy.status === "Up to date" 
-                            ? "bg-green-50 text-green-700" 
-                            : "bg-yellow-50 text-yellow-700"
-                        }`}>
-                          {policy.status}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-2">{policy.description}</p>
-                      <div className="flex justify-between items-center text-xs text-muted-foreground">
-                        <span>Updated: {policy.lastUpdated}</span>
-                        <Button variant="ghost" size="sm">View</Button>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle>HIPAA Requirements</CardTitle>
+              <CardDescription>Status of required compliance items</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {requiredItems.map((item) => (
+                  <div key={item.id} className="flex items-start p-3 border rounded-lg">
+                    <div className={cn(
+                      "p-2 rounded-full mr-3",
+                      item.status === 'complete' ? "bg-green-50" : "bg-yellow-50"
+                    )}>
+                      {item.status === 'complete' ? 
+                        <CheckCircle className="h-5 w-5 text-green-600" /> : 
+                        <AlertCircle className="h-5 w-5 text-yellow-600" />
+                      }
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-medium">{item.title}</div>
+                          <div className="text-sm text-muted-foreground">{item.description}</div>
+                        </div>
+                        <Button 
+                          variant={item.status === 'complete' ? "ghost" : "outline"} 
+                          size="sm"
+                        >
+                          {item.status === 'complete' ? 'View' : 'Complete'}
+                        </Button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
           
-          <TabsContent value="audit" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Audit Logs</CardTitle>
-                <CardDescription>
-                  Track access to PHI and system activity
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium">Audit Log Monitoring</h3>
-                  <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-                    This section displays audit logs for monitoring who accessed patient information,
-                    when it was accessed, and what actions were performed.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="training" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Staff Training</CardTitle>
-                <CardDescription>
-                  Manage HIPAA training for staff members
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium">Training Management</h3>
-                  <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-                    Track training completion, schedule new training sessions,
-                    and ensure all staff members are compliant with HIPAA regulations.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="breaches" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Breach Management</CardTitle>
-                <CardDescription>
-                  Monitor and respond to potential data breaches
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium">No Active Breaches</h3>
-                  <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-                    There are currently no active breach incidents.
-                    This section would display breach reports, response activities,
-                    and notification procedures if any were present.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          <Card>
+            <CardHeader>
+              <CardTitle>Security Risks</CardTitle>
+              <CardDescription>Identified issues to address</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {riskItems.map((item) => (
+                  <div key={item.id} className="p-3 border rounded-lg">
+                    <div className="flex items-center mb-2">
+                      <div className={cn(
+                        "p-1 rounded-full mr-2",
+                        item.severity === 'high' ? "bg-red-50" :
+                        item.severity === 'medium' ? "bg-yellow-50" :
+                        "bg-blue-50"
+                      )}>
+                        <AlertTriangle className={cn(
+                          "h-4 w-4",
+                          item.severity === 'high' ? "text-red-600" :
+                          item.severity === 'medium' ? "text-yellow-600" :
+                          "text-blue-600"
+                        )} />
+                      </div>
+                      <div className="flex-1 font-medium">
+                        <span className={cn(
+                          "text-xs px-2 py-0.5 rounded-full uppercase",
+                          item.severity === 'high' ? "bg-red-50 text-red-700" :
+                          item.severity === 'medium' ? "bg-yellow-50 text-yellow-700" :
+                          "bg-blue-50 text-blue-700"
+                        )}>
+                          {item.severity}
+                        </span>
+                        <span className="ml-2">{item.title}</span>
+                      </div>
+                    </div>
+                    <div className="text-sm text-muted-foreground ml-7">
+                      {item.description}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter className="border-t pt-4">
+              <Button variant="outline" className="w-full">
+                View All Risks
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </AppLayout>
   );
