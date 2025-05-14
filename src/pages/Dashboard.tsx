@@ -1,4 +1,3 @@
-
 import React from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import StatsCard from '@/components/Dashboard/StatsCard';
@@ -6,6 +5,7 @@ import PatientSummary from '@/components/Dashboard/PatientSummary';
 import { Activity, Calendar, Clock, FileCheck, User, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { cn } from '@/lib/utils';
 
 // Mock data for charts
 const weeklyAppointmentsData = [
