@@ -1,10 +1,13 @@
 
-import React from 'react';
-import Sidebar from './Sidebar';
+import React, { useEffect, useState } from 'react';
+import RoleBasedSidebar from './RoleBasedSidebar';
 import { cn } from '@/lib/utils';
 import { Bell, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import AIChatbot from '../Chat/AIChatbot';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -12,9 +15,23 @@ interface AppLayoutProps {
 }
 
 const AppLayout = ({ children, title }: AppLayoutProps) => {
+  const navigate = useNavigate();
+  const [userRole, setUserRole] = useState<string | null>(null);
+  
+  useEffect(() => {
+    // Check if user is logged in with a role
+    const storedRole = localStorage.getItem('userRole');
+    if (!storedRole) {
+      toast.error('Please log in to continue');
+      navigate('/');
+    } else {
+      setUserRole(storedRole);
+    }
+  }, [navigate]);
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      <Sidebar />
+      <RoleBasedSidebar />
       
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="h-16 border-b flex items-center justify-between px-6">
@@ -28,7 +45,7 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
               <Input
                 type="search"
                 placeholder="Search..."
-                className="w-[200px] pl-8 rounded-full bg-secondary"
+                className="pl-8 w-[200px] rounded-full bg-secondary"
               />
             </div>
             
@@ -45,6 +62,8 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
           {children}
         </main>
       </div>
+      
+      <AIChatbot />
     </div>
   );
 };

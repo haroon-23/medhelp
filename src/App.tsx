@@ -9,7 +9,12 @@ import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
 import Appointments from "./pages/Appointments";
 import Reports from "./pages/Reports";
+import MedicalRecords from "./pages/MedicalRecords";
+import Compliance from "./pages/Compliance";
+import Billing from "./pages/Billing";
+import VoiceBotAnalytics from "./pages/VoiceBotAnalytics";
 import NotFound from "./pages/NotFound";
+import './components/Chat/chatbot.css';
 
 const queryClient = new QueryClient();
 
@@ -25,6 +30,10 @@ const App = () => (
           <Route path="/patients" element={<Patients />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/records" element={<MedicalRecords />} />
+          <Route path="/compliance" element={<Compliance />} />
+          <Route path="/billing" element={<Billing />} />
+          <Route path="/voice-analytics" element={<VoiceBotAnalytics />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

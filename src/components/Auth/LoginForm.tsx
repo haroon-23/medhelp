@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/card';
 import { Shield, Key, User } from 'lucide-react';
 import { toast } from 'sonner';
+import RoleSelector from './RoleSelector';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const LoginForm = () => {
     username: '',
     password: ''
   });
+  const [showRoleSelector, setShowRoleSelector] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -42,7 +44,7 @@ const LoginForm = () => {
       // Mock credentials for demo
       if (formData.username === 'admin' && formData.password === 'password') {
         toast.success('Login successful!');
-        navigate('/dashboard');
+        setShowRoleSelector(true);
       } else {
         toast.error('Invalid credentials');
       }
@@ -53,6 +55,28 @@ const LoginForm = () => {
       setIsLoading(false);
     }
   };
+
+  if (showRoleSelector) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <Card className="mb-8">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center mb-4">
+              <div className="p-2 bg-primary/10 rounded-full">
+                <Shield className="h-10 w-10 text-primary" />
+              </div>
+            </div>
+            <CardTitle className="text-2xl">Select Your Role</CardTitle>
+            <CardDescription>
+              Choose your role to access the appropriate interface
+            </CardDescription>
+          </CardHeader>
+        </Card>
+        
+        <RoleSelector />
+      </div>
+    );
+  }
 
   return (
     <Card className="w-full max-w-md mx-auto">
