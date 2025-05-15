@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from '@/components/Auth/LoginForm';
@@ -42,7 +41,7 @@ const Index = () => {
               <div className="inline-block mb-2">
                 <span className="hipaa-badge">HIPAA Compliant</span>
               </div>
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
                 Secure Healthcare Management System
               </h1>
               <p className="text-muted-foreground md:text-xl max-w-[600px]">
