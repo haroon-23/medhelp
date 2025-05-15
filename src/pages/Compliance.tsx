@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Shield, CheckCircle, AlertCircle, Clock, FileCheck, User, Lock, Calendar, FileText } from 'lucide-react';
+import { Shield, CheckCircle, AlertCircle, Clock, FileCheck, User, Lock, Calendar, FileText, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface ComplianceItem {
