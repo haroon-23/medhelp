@@ -57,15 +57,15 @@ const LoginForm = () => {
 
   if (showRoleSelector) {
     return (
-      <div className="w-full max-w-5xl mx-auto">
-        <Card className="mb-8 shadow">
-          <CardHeader className="text-center pb-4">
+      <div className="w-full max-w-6xl mx-auto px-4">
+        <Card className="mb-8 shadow-lg border-2">
+          <CardHeader className="text-center pb-4 bg-slate-50">
             <div className="flex items-center justify-center mb-3">
               <div className="p-3 bg-primary/10 rounded-full">
                 <Shield className="h-10 w-10 text-primary" />
               </div>
             </div>
-            <CardTitle className="text-2xl mb-2">Select Your Role</CardTitle>
+            <CardTitle className="text-2xl font-bold mb-2">Select Your Role</CardTitle>
             <CardDescription className="text-lg">
               Choose your role to access the appropriate interface
             </CardDescription>
@@ -78,30 +78,30 @@ const LoginForm = () => {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow">
-      <CardHeader className="space-y-1 pb-4">
+    <Card className="w-full max-w-md mx-auto shadow-lg border-2 overflow-hidden">
+      <CardHeader className="space-y-1 pb-4 bg-slate-50">
         <div className="flex items-center justify-center mb-4">
           <div className="p-3 bg-primary/10 rounded-full">
             <Shield className="h-10 w-10 text-primary" />
           </div>
         </div>
-        <CardTitle className="text-2xl text-center">MediSecure EMR</CardTitle>
+        <CardTitle className="text-2xl text-center font-bold">MediSecure EMR</CardTitle>
         <CardDescription className="text-center text-base">
           Enter your credentials to access your account
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="py-6">
         <form onSubmit={handleSubmit}>
-          <div className="grid gap-4">
+          <div className="grid gap-5">
             <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username" className="font-medium">Username</Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="username"
                   name="username"
                   placeholder="Enter your username"
-                  className="pl-9"
+                  className="pl-9 py-5"
                   value={formData.username}
                   onChange={handleChange}
                   required
@@ -110,7 +110,7 @@ const LoginForm = () => {
             </div>
             <div className="grid gap-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="font-medium">Password</Label>
                 <a href="#" className="text-xs text-primary hover:underline">
                   Forgot password?
                 </a>
@@ -122,20 +122,20 @@ const LoginForm = () => {
                   name="password"
                   type="password"
                   placeholder="••••••••"
-                  className="pl-9"
+                  className="pl-9 py-5"
                   value={formData.password}
                   onChange={handleChange}
                   required
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full h-11 mt-2" disabled={isLoading}>
+            <Button type="submit" className="w-full py-5 text-base font-medium" disabled={isLoading}>
               {isLoading ? 'Authenticating...' : 'Sign In'}
             </Button>
           </div>
         </form>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="bg-slate-50">
         <div className="text-center text-xs text-muted-foreground w-full">
           <p className="mt-1">
             <span className="hipaa-badge text-[10px]">HIPAA Compliant</span>

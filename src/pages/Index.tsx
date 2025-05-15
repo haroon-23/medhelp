@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from '@/components/Auth/LoginForm';
@@ -15,13 +16,13 @@ const Index = () => {
   }, [navigate]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-muted/30">
-      <header className="flex h-16 items-center px-4 lg:px-6 bg-background border-b">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-blue-50">
+      <header className="flex h-16 items-center px-6 lg:px-8 bg-white border-b shadow-sm">
         <div className="flex items-center gap-2 font-semibold">
           <Shield className="h-6 w-6 text-primary" />
           <span>MediSecure EMR</span>
         </div>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+        <nav className="ml-auto flex gap-6">
           <a href="#features" className="text-sm font-medium hover:underline underline-offset-4">
             Features
           </a>
@@ -35,13 +36,13 @@ const Index = () => {
       </header>
       
       <main className="flex-1">
-        <section className="w-full py-12 md:py-16 lg:py-20 bg-gradient-to-b from-white to-muted/30">
-          <div className="container px-4 md:px-6 flex flex-col md:flex-row items-center gap-8 lg:gap-12">
-            <div className="flex flex-col space-y-4 md:w-1/2">
+        <section className="w-full py-16 lg:py-20">
+          <div className="container px-4 mx-auto flex flex-col md:flex-row items-center gap-10 lg:gap-16">
+            <div className="flex flex-col space-y-5 md:w-1/2">
               <div className="inline-block mb-2">
                 <span className="hipaa-badge">HIPAA Compliant</span>
               </div>
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                 Secure Healthcare Management System
               </h1>
               <p className="text-muted-foreground md:text-lg max-w-[600px]">
@@ -56,14 +57,14 @@ const Index = () => {
           </div>
         </section>
         
-        <section id="features" className="w-full py-12 md:py-24 bg-white">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+        <section id="features" className="w-full py-16 bg-white border-y">
+          <div className="container px-4 mx-auto">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <div className="space-y-2">
                 <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">
                   Key Features
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                   Everything You Need for Patient Care
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
@@ -72,7 +73,7 @@ const Index = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
                   title: "Patient Management",
@@ -99,7 +100,7 @@ const Index = () => {
                   description: "Comprehensive reporting tools to track performance and identify improvement areas.",
                 },
               ].map((feature, index) => (
-                <div key={index} className="flex flex-col items-center text-center p-6 space-y-4 border rounded-lg bg-background shadow-sm">
+                <div key={index} className="flex flex-col items-center text-center p-6 space-y-4 border-2 rounded-lg bg-background shadow-sm">
                   <div className="p-3 rounded-full bg-primary/10">
                     <Shield className="h-6 w-6 text-primary" />
                   </div>
@@ -111,14 +112,14 @@ const Index = () => {
           </div>
         </section>
         
-        <section id="security" className="w-full py-12 md:py-24 bg-muted/30">
-          <div className="container px-4 md:px-6">
+        <section id="security" className="w-full py-16 bg-blue-50">
+          <div className="container px-4 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">
                   Security First
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                   Protected Health Information
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
@@ -129,14 +130,14 @@ const Index = () => {
           </div>
         </section>
         
-        <section id="compliance" className="w-full py-12 md:py-24 bg-white">
-          <div className="container px-4 md:px-6">
+        <section id="compliance" className="w-full py-16 bg-white border-t">
+          <div className="container px-4 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">
                   HIPAA Compliant
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                   Stay Compliant, Avoid Penalties
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
@@ -148,11 +149,11 @@ const Index = () => {
         </section>
       </main>
       
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full border-t items-center px-4 md:px-6 bg-background">
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full border-t items-center px-6 bg-white">
         <p className="text-xs text-muted-foreground">
           © 2025 MediSecure EMR. All rights reserved.
         </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+        <nav className="sm:ml-auto flex gap-6">
           <a href="#" className="text-xs hover:underline underline-offset-4">
             Terms of Service
           </a>
