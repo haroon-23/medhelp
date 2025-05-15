@@ -24,79 +24,81 @@ const RoleSelector = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8">
         {[
           {
             title: "Doctor",
-            icon: <User className="h-12 w-12 text-blue-600" />,
+            icon: <User className="h-14 w-14 text-blue-600" />,
             iconBg: "bg-blue-100",
             description: "Access patient records, appointments, and voice bot analytics",
             features: [
-              { text: "Full patient management", icon: <User className="h-4 w-4 text-green-600" /> },
-              { text: "Voice bot analytics", icon: <Calendar className="h-4 w-4 text-green-600" /> },
-              { text: "Medical record access", icon: <FileText className="h-4 w-4 text-green-600" /> }
+              { icon: <User className="h-5 w-5 text-green-600" />, text: "Full patient management" },
+              { icon: <Calendar className="h-5 w-5 text-green-600" />, text: "Voice bot analytics" },
+              { icon: <FileText className="h-5 w-5 text-green-600" />, text: "Medical record access" }
             ],
             role: "doctor"
           },
           {
             title: "Staff",
-            icon: <Users className="h-12 w-12 text-indigo-600" />,
+            icon: <Users className="h-14 w-14 text-indigo-600" />,
             iconBg: "bg-indigo-100",
             description: "Manage appointments, billing, and basic patient information",
             features: [
-              { text: "Appointment scheduling", icon: <Calendar className="h-4 w-4 text-green-600" /> },
-              { text: "Billing management", icon: <FileText className="h-4 w-4 text-green-600" /> },
-              { text: "Basic patient info", icon: <User className="h-4 w-4 text-green-600" /> }
+              { icon: <Calendar className="h-5 w-5 text-green-600" />, text: "Appointment scheduling" },
+              { icon: <FileText className="h-5 w-5 text-green-600" />, text: "Billing management" },
+              { icon: <User className="h-5 w-5 text-green-600" />, text: "Basic patient info" }
             ],
             role: "staff"
           },
           {
             title: "Administrator",
-            icon: <Shield className="h-12 w-12 text-purple-600" />,
+            icon: <Shield className="h-14 w-14 text-purple-600" />,
             iconBg: "bg-purple-100",
             description: "Complete system access with HIPAA compliance and reporting",
             features: [
-              { text: "Full system access", icon: <Users className="h-4 w-4 text-green-600" /> },
-              { text: "HIPAA compliance tools", icon: <Shield className="h-4 w-4 text-green-600" /> },
-              { text: "Advanced reporting", icon: <FileText className="h-4 w-4 text-green-600" /> }
+              { icon: <Users className="h-5 w-5 text-green-600" />, text: "Full system access" },
+              { icon: <Shield className="h-5 w-5 text-green-600" />, text: "HIPAA compliance tools" },
+              { icon: <FileText className="h-5 w-5 text-green-600" />, text: "Advanced reporting" }
             ],
             role: "admin"
           }
         ].map((role, index) => (
-          <Card key={index} className="border-2 h-full hover:shadow-lg transition-shadow duration-300 flex flex-col">
-            <CardHeader className="pb-4 pt-6 bg-slate-50">
-              <div className="flex items-center mb-4">
-                <div className={`p-3 h-16 w-16 ${role.iconBg} rounded-lg flex items-center justify-center mr-4`}>
-                  {role.icon}
-                </div>
-                <div className="flex-1">
-                  <CardTitle className="text-2xl font-bold mb-1">{role.title}</CardTitle>
+          <Card key={index} className="border-2 rounded-lg hover:shadow-lg transition-shadow duration-300 mb-4">
+            <div className="flex flex-col md:flex-row">
+              <CardHeader className="md:w-1/3 bg-slate-50 p-6 flex items-center">
+                <div>
+                  <div className={`p-4 h-24 w-24 ${role.iconBg} rounded-lg flex items-center justify-center mb-3`}>
+                    {role.icon}
+                  </div>
+                  <CardTitle className="text-2xl font-bold mb-2">{role.title}</CardTitle>
                   <CardDescription className="text-sm">
                     {role.description}
                   </CardDescription>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent className="py-4 px-6 flex-grow">
-              <ul className="space-y-4">
-                {role.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center gap-3">
-                    <span className="bg-green-100 p-1.5 rounded-full flex-shrink-0">
-                      {feature.icon}
-                    </span>
-                    <span className="text-base">{feature.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter className="pt-3 pb-6 px-6 bg-slate-50">
-              <Button 
-                className="w-full py-5 font-semibold text-base" 
-                onClick={() => handleRoleSelect(role.role)}
-              >
-                Log in as {role.title}
-              </Button>
-            </CardFooter>
+              </CardHeader>
+              
+              <CardContent className="py-6 px-8 md:w-2/3 flex flex-col justify-between">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  {role.features.map((feature, idx) => (
+                    <div key={idx} className="flex items-center gap-3">
+                      <span className="bg-green-100 p-2 rounded-full flex-shrink-0">
+                        {feature.icon}
+                      </span>
+                      <span className="text-base">{feature.text}</span>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="w-full">
+                  <Button 
+                    className="w-full py-6 font-semibold text-base" 
+                    onClick={() => handleRoleSelect(role.role)}
+                  >
+                    Log in as {role.title}
+                  </Button>
+                </div>
+              </CardContent>
+            </div>
           </Card>
         ))}
       </div>
