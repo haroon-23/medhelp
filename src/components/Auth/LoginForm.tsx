@@ -38,7 +38,6 @@ const LoginForm = () => {
     
     try {
       // In a real app, this would be an API call to authenticate
-      // For demo purposes, we'll just simulate a successful login
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Mock credentials for demo
@@ -58,16 +57,16 @@ const LoginForm = () => {
 
   if (showRoleSelector) {
     return (
-      <div className="w-full max-w-4xl mx-auto">
-        <Card className="mb-6 shadow">
+      <div className="w-full max-w-5xl mx-auto">
+        <Card className="mb-8 shadow">
           <CardHeader className="text-center pb-4">
             <div className="flex items-center justify-center mb-3">
-              <div className="p-2 bg-primary/10 rounded-full">
-                <Shield className="h-8 w-8 text-primary" />
+              <div className="p-3 bg-primary/10 rounded-full">
+                <Shield className="h-10 w-10 text-primary" />
               </div>
             </div>
-            <CardTitle className="text-2xl mb-1">Select Your Role</CardTitle>
-            <CardDescription className="text-base">
+            <CardTitle className="text-2xl mb-2">Select Your Role</CardTitle>
+            <CardDescription className="text-lg">
               Choose your role to access the appropriate interface
             </CardDescription>
           </CardHeader>
@@ -82,8 +81,8 @@ const LoginForm = () => {
     <Card className="w-full max-w-md mx-auto shadow">
       <CardHeader className="space-y-1 pb-4">
         <div className="flex items-center justify-center mb-4">
-          <div className="p-2 bg-primary/10 rounded-full">
-            <Shield className="h-8 w-8 text-primary" />
+          <div className="p-3 bg-primary/10 rounded-full">
+            <Shield className="h-10 w-10 text-primary" />
           </div>
         </div>
         <CardTitle className="text-2xl text-center">MediSecure EMR</CardTitle>

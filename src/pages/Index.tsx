@@ -16,7 +16,7 @@ const Index = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/30">
-      <header className="flex h-14 items-center px-4 lg:px-6 bg-background border-b">
+      <header className="flex h-16 items-center px-4 lg:px-6 bg-background border-b">
         <div className="flex items-center gap-2 font-semibold">
           <Shield className="h-6 w-6 text-primary" />
           <span>MediSecure EMR</span>
@@ -50,7 +50,7 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="md:w-1/2 w-full max-w-md">
+            <div className="md:w-1/2 w-full max-w-md mx-auto">
               <LoginForm />
             </div>
           </div>
