@@ -16,16 +16,16 @@ const RoleSelector = () => {
   return (
     <div className="grid gap-6 md:grid-cols-3">
       <Card className="transition-all hover:shadow-md">
-        <CardHeader>
-          <div className="p-2 w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-2">
+        <CardHeader className="pb-2">
+          <div className="p-2 w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-3">
             <User className="h-6 w-6 text-blue-600" />
           </div>
-          <CardTitle>Doctor</CardTitle>
-          <CardDescription>
-            Access patient records, appointments, voice bot analytics, and more
+          <CardTitle className="text-xl mb-1">Doctor</CardTitle>
+          <CardDescription className="text-sm">
+            Access patient records, appointments, and voice bot analytics
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pb-4">
           <ul className="space-y-2">
             <li className="flex items-center">
               <span className="bg-green-50 p-1 rounded-full mr-2">
@@ -47,7 +47,7 @@ const RoleSelector = () => {
             </li>
           </ul>
         </CardContent>
-        <CardFooter className="pt-5">
+        <CardFooter>
           <Button className="w-full" onClick={() => handleRoleSelect('doctor')}>
             Log in as Doctor
           </Button>
@@ -55,16 +55,16 @@ const RoleSelector = () => {
       </Card>
       
       <Card className="transition-all hover:shadow-md">
-        <CardHeader>
-          <div className="p-2 w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center mb-2">
+        <CardHeader className="pb-2">
+          <div className="p-2 w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center mb-3">
             <Users className="h-6 w-6 text-indigo-600" />
           </div>
-          <CardTitle>Staff</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-xl mb-1">Staff</CardTitle>
+          <CardDescription className="text-sm">
             Manage appointments, billing, and basic patient information
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pb-4">
           <ul className="space-y-2">
             <li className="flex items-center">
               <span className="bg-green-50 p-1 rounded-full mr-2">
@@ -86,7 +86,7 @@ const RoleSelector = () => {
             </li>
           </ul>
         </CardContent>
-        <CardFooter className="pt-5">
+        <CardFooter>
           <Button className="w-full" onClick={() => handleRoleSelect('staff')}>
             Log in as Staff
           </Button>
@@ -94,16 +94,16 @@ const RoleSelector = () => {
       </Card>
       
       <Card className="transition-all hover:shadow-md">
-        <CardHeader>
-          <div className="p-2 w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-2">
+        <CardHeader className="pb-2">
+          <div className="p-2 w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-3">
             <Shield className="h-6 w-6 text-purple-600" />
           </div>
-          <CardTitle>Administrator</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-xl mb-1">Administrator</CardTitle>
+          <CardDescription className="text-sm">
             Complete system access with HIPAA compliance and reporting
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pb-4">
           <ul className="space-y-2">
             <li className="flex items-center">
               <span className="bg-green-50 p-1 rounded-full mr-2">
@@ -125,7 +125,7 @@ const RoleSelector = () => {
             </li>
           </ul>
         </CardContent>
-        <CardFooter className="pt-5">
+        <CardFooter>
           <Button className="w-full" onClick={() => handleRoleSelect('admin')}>
             Log in as Admin
           </Button>

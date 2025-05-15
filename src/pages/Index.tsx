@@ -35,16 +35,16 @@ const Index = () => {
       </header>
       
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-16 bg-gradient-to-b from-white to-muted/30">
-          <div className="container px-4 md:px-6 flex flex-col md:flex-row items-center gap-10">
+        <section className="w-full py-12 md:py-16 lg:py-20 bg-gradient-to-b from-white to-muted/30">
+          <div className="container px-4 md:px-6 flex flex-col md:flex-row items-center gap-8 lg:gap-12">
             <div className="flex flex-col space-y-4 md:w-1/2">
               <div className="inline-block mb-2">
                 <span className="hipaa-badge">HIPAA Compliant</span>
               </div>
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
                 Secure Healthcare Management System
               </h1>
-              <p className="text-muted-foreground md:text-xl max-w-[600px]">
+              <p className="text-muted-foreground md:text-lg max-w-[600px]">
                 A modern EMR/CRM solution designed for hospitals and clinics, with built-in HIPAA compliance 
                 and powerful patient management tools.
               </p>
