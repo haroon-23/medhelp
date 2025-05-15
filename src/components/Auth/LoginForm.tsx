@@ -56,32 +56,14 @@ const LoginForm = () => {
   };
 
   if (showRoleSelector) {
-    return (
-      <div className="w-full max-w-6xl mx-auto px-4">
-        <Card className="mb-8 shadow-lg border-2">
-          <CardHeader className="text-center pb-4 bg-slate-50">
-            <div className="flex items-center justify-center mb-3">
-              <div className="p-3 bg-primary/10 rounded-full">
-                <Shield className="h-10 w-10 text-primary" />
-              </div>
-            </div>
-            <CardTitle className="text-2xl font-bold mb-2">Select Your Role</CardTitle>
-            <CardDescription className="text-lg">
-              Choose your role to access the appropriate interface
-            </CardDescription>
-          </CardHeader>
-        </Card>
-        
-        <RoleSelector />
-      </div>
-    );
+    return <RoleSelector />;
   }
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg border-2 overflow-hidden">
-      <CardHeader className="space-y-1 pb-4 bg-slate-50">
+      <CardHeader className="space-y-3 pb-6 pt-8 bg-slate-50">
         <div className="flex items-center justify-center mb-4">
-          <div className="p-3 bg-primary/10 rounded-full">
+          <div className="p-4 w-20 h-20 bg-primary/10 rounded-full">
             <Shield className="h-10 w-10 text-primary" />
           </div>
         </div>
@@ -90,58 +72,58 @@ const LoginForm = () => {
           Enter your credentials to access your account
         </CardDescription>
       </CardHeader>
-      <CardContent className="py-6">
+      <CardContent className="py-8 px-6">
         <form onSubmit={handleSubmit}>
-          <div className="grid gap-5">
-            <div className="grid gap-2">
-              <Label htmlFor="username" className="font-medium">Username</Label>
+          <div className="grid gap-6">
+            <div className="grid gap-3">
+              <Label htmlFor="username" className="font-medium text-base">Username</Label>
               <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <User className="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="username"
                   name="username"
                   placeholder="Enter your username"
-                  className="pl-9 py-5"
+                  className="pl-12 py-6 text-base"
                   value={formData.username}
                   onChange={handleChange}
                   required
                 />
               </div>
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-3">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="font-medium">Password</Label>
-                <a href="#" className="text-xs text-primary hover:underline">
+                <Label htmlFor="password" className="font-medium text-base">Password</Label>
+                <a href="#" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </a>
               </div>
               <div className="relative">
-                <Key className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Key className="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   placeholder="••••••••"
-                  className="pl-9 py-5"
+                  className="pl-12 py-6 text-base"
                   value={formData.password}
                   onChange={handleChange}
                   required
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full py-5 text-base font-medium" disabled={isLoading}>
+            <Button type="submit" className="w-full py-6 text-lg font-medium mt-2" disabled={isLoading}>
               {isLoading ? 'Authenticating...' : 'Sign In'}
             </Button>
           </div>
         </form>
       </CardContent>
-      <CardFooter className="bg-slate-50">
-        <div className="text-center text-xs text-muted-foreground w-full">
+      <CardFooter className="bg-slate-50 py-6">
+        <div className="text-center text-sm text-muted-foreground w-full">
           <p className="mt-1">
-            <span className="hipaa-badge text-[10px]">HIPAA Compliant</span>
-            <span className="ml-1">Secure Sign-In</span>
+            <span className="hipaa-badge text-xs">HIPAA Compliant</span>
+            <span className="ml-2">Secure Sign-In</span>
           </p>
-          <p className="mt-4 text-[10px]">Use admin/password for demo access</p>
+          <p className="mt-4 text-xs">Use admin/password for demo access</p>
         </div>
       </CardFooter>
     </Card>
