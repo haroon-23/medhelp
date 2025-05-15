@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import StatsCard from '@/components/Dashboard/StatsCard';
@@ -236,28 +237,28 @@ const Dashboard = () => {
             value="2,840" 
             description="154 new this month"
             trend={{ value: 12, isPositive: true }}
-            icon={<Users />}
+            icon={Users}
           />
           <StatsCard 
             title="Appointments" 
             value="120" 
             description="32 scheduled today"
             trend={{ value: 8, isPositive: true }}
-            icon={<CalendarIcon />}
+            icon={CalendarIcon}
           />
           <StatsCard 
             title="Average Wait Time" 
             value="8.4 min" 
             description="2.1 min lower than last month"
-            trend={{ value: 18, isPositive: false }}
-            icon={<Clock />}
+            trend={{ value: 18, isPositive: true }}
+            icon={Clock}
           />
           <StatsCard 
             title="Revenue" 
             value="$24,315" 
             description="$4,142 more than last month"
             trend={{ value: 20, isPositive: true }}
-            icon={<DollarSign />}
+            icon={DollarSign}
           />
         </div>
         

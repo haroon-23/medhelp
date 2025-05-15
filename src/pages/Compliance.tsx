@@ -1,230 +1,405 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { Shield, CheckCircle, AlertCircle, Info, Clipboard, FileText, AlertTriangle, Download } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Shield, CheckCircle, AlertCircle, Clock, FileCheck, User, Lock, Calendar, FileText } from 'lucide-react';
+import { toast } from 'sonner';
+
+interface ComplianceItem {
+  id: string;
+  title: string;
+  description: string;
+  status: 'completed' | 'at-risk' | 'pending';
+  category: 'privacy' | 'security' | 'technical' | 'administrative';
+  dueDate?: string;
+  assignedTo?: string;
+}
+
+const complianceItems: ComplianceItem[] = [
+  {
+    id: 'comp1',
+    title: 'Annual HIPAA Staff Training',
+    description: 'Ensure all staff members have completed their annual HIPAA training and certification.',
+    status: 'completed',
+    category: 'administrative',
+    dueDate: '2025-06-15',
+    assignedTo: 'HR Department',
+  },
+  {
+    id: 'comp2',
+    title: 'Password Policy Compliance',
+    description: 'Verify all user accounts meet password complexity requirements and rotation schedules.',
+    status: 'at-risk',
+    category: 'security',
+    dueDate: '2025-05-20',
+    assignedTo: 'IT Security',
+  },
+  {
+    id: 'comp3',
+    title: 'Electronic PHI Encryption',
+    description: 'Verify all PHI is properly encrypted at rest and in transit per HIPAA requirements.',
+    status: 'completed',
+    category: 'technical',
+    dueDate: '2025-04-30',
+    assignedTo: 'IT Security',
+  },
+  {
+    id: 'comp4',
+    title: 'Patient Privacy Notice Updates',
+    description: 'Review and update patient privacy notices to reflect current practices and policies.',
+    status: 'pending',
+    category: 'privacy',
+    dueDate: '2025-05-31',
+    assignedTo: 'Legal Department',
+  },
+  {
+    id: 'comp5',
+    title: 'Access Control Audit',
+    description: 'Review and validate appropriate access controls for all users accessing PHI.',
+    status: 'pending',
+    category: 'security',
+    dueDate: '2025-06-10',
+    assignedTo: 'Compliance Officer',
+  },
+  {
+    id: 'comp6',
+    title: 'Business Associate Agreements',
+    description: 'Review and update all BAAs with vendors who have access to PHI.',
+    status: 'at-risk',
+    category: 'administrative',
+    dueDate: '2025-05-25',
+    assignedTo: 'Legal Department',
+  },
+];
 
 const Compliance = () => {
-  const complianceScore = 85;
-  const requiredItems = [
-    { id: 1, title: 'Privacy Policy', status: 'complete', description: 'Updated and compliant with HIPAA requirements' },
-    { id: 2, title: 'Security Risk Assessment', status: 'complete', description: 'Annual review completed' },
-    { id: 3, title: 'Employee Training', status: 'pending', description: '3 staff members need to complete training' },
-    { id: 4, title: 'Business Associate Agreements', status: 'complete', description: 'All vendors have signed BAAs' },
-    { id: 5, title: 'Breach Notification Plan', status: 'complete', description: 'Plan updated and tested' }
-  ];
+  const [tasks, setTasks] = useState<ComplianceItem[]>(complianceItems);
+  const [activeTab, setActiveTab] = useState('overview');
+  
+  const completedTasks = tasks.filter(task => task.status === 'completed').length;
+  const atRiskTasks = tasks.filter(task => task.status === 'at-risk').length;
+  const pendingTasks = tasks.filter(task => task.status === 'pending').length;
+  
+  const complianceScore = Math.round((completedTasks / tasks.length) * 100);
 
-  const riskItems = [
-    { id: 1, title: 'Password Policy Compliance', severity: 'medium', description: 'Some accounts not meeting complexity requirements' },
-    { id: 2, title: 'Audit Logging', severity: 'low', description: 'Review audit logs more frequently' },
-    { id: 3, title: 'Encryption at Rest', severity: 'low', description: 'All systems using approved encryption' }
-  ];
+  const handleMarkAsComplete = (id: string) => {
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, status: 'completed' as const } : task
+    ));
+    toast.success('Task marked as completed');
+  };
+
+  const getStatusBadge = (status: 'completed' | 'at-risk' | 'pending') => {
+    switch (status) {
+      case 'completed':
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200"><CheckCircle className="mr-1 h-3 w-3" /> Completed</Badge>;
+      case 'at-risk':
+        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200"><AlertCircle className="mr-1 h-3 w-3" /> At Risk</Badge>;
+      case 'pending':
+        return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200"><Clock className="mr-1 h-3 w-3" /> Pending</Badge>;
+    }
+  };
 
   return (
     <AppLayout title="HIPAA Compliance">
-      <div className="grid gap-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">HIPAA Compliance</h2>
-            <p className="text-muted-foreground">
-              Monitor and manage your organization's HIPAA compliance status
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" className="gap-1">
-              <Download className="h-4 w-4" />
-              Export Report
-            </Button>
-            <Button className="gap-1">
-              <Shield className="h-4 w-4" />
-              Run Assessment
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
+      <div className="space-y-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Compliance Summary */}
+          <Card className="flex-1">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Compliance Score</CardTitle>
-              <CardDescription>Last updated: May 14, 2025</CardDescription>
+              <CardTitle className="flex items-center">
+                <Shield className="h-5 w-5 mr-2 text-primary" />
+                Compliance Dashboard
+              </CardTitle>
+              <CardDescription>
+                Overview of your organization's HIPAA compliance status
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col items-center">
-                <div className="relative w-32 h-32 flex items-center justify-center rounded-full border-8 border-muted mb-4">
-                  <div className={cn(
-                    "text-2xl font-bold",
-                    complianceScore >= 90 ? "text-green-600" :
-                    complianceScore >= 70 ? "text-yellow-600" :
-                    "text-red-600"
-                  )}>
-                    {complianceScore}%
+              <div className="space-y-6">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium">Overall Compliance Score</span>
+                    <span className="text-sm font-medium">{complianceScore}%</span>
                   </div>
-                  <svg className="absolute top-0 left-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      fill="none"
-                      stroke={complianceScore >= 90 ? "rgb(22 163 74)" :
-                              complianceScore >= 70 ? "rgb(202 138 4)" :
-                              "rgb(220 38 38)"}
-                      strokeWidth="8"
-                      strokeDasharray="251.2"
-                      strokeDashoffset={251.2 - (251.2 * complianceScore / 100)}
-                      strokeLinecap="round"
-                    />
-                  </svg>
+                  <Progress value={complianceScore} className="h-2" />
                 </div>
-                <div className={cn(
-                  "text-sm font-medium rounded-full px-3 py-1",
-                  complianceScore >= 90 ? "bg-green-50 text-green-700" :
-                  complianceScore >= 70 ? "bg-yellow-50 text-yellow-700" :
-                  "bg-red-50 text-red-700"
-                )}>
-                  {complianceScore >= 90 ? "Excellent" :
-                   complianceScore >= 70 ? "Good" :
-                   "Needs Attention"}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Required Tasks</CardTitle>
-              <CardDescription>HIPAA compliance requirements</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="font-medium">Completed</div>
-                  <div className="text-sm">4/5</div>
-                </div>
-                <Progress value={80} className="h-2" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Risk Assessment</CardTitle>
-              <CardDescription>Identified security risks</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-center">
-                <div className="flex gap-4 mb-4">
-                  <div className="flex flex-col items-center">
-                    <div className="text-3xl font-bold text-green-600">1</div>
-                    <div className="text-xs text-muted-foreground">High</div>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="text-3xl font-bold text-yellow-600">1</div>
-                    <div className="text-xs text-muted-foreground">Medium</div>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="text-3xl font-bold text-blue-600">2</div>
-                    <div className="text-xs text-muted-foreground">Low</div>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm" className="w-full">
-                  View All Risks
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle>HIPAA Requirements</CardTitle>
-              <CardDescription>Status of required compliance items</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {requiredItems.map((item) => (
-                  <div key={item.id} className="flex items-start p-3 border rounded-lg">
-                    <div className={cn(
-                      "p-2 rounded-full mr-3",
-                      item.status === 'complete' ? "bg-green-50" : "bg-yellow-50"
-                    )}>
-                      {item.status === 'complete' ? 
-                        <CheckCircle className="h-5 w-5 text-green-600" /> : 
-                        <AlertCircle className="h-5 w-5 text-yellow-600" />
-                      }
+                
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <div className="font-medium text-green-700 flex items-center mb-1">
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Completed
                     </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="font-medium">{item.title}</div>
-                          <div className="text-sm text-muted-foreground">{item.description}</div>
+                    <div className="text-2xl font-bold text-green-700">{completedTasks}</div>
+                  </div>
+                  <div className="bg-yellow-50 p-4 rounded-lg">
+                    <div className="font-medium text-yellow-700 flex items-center mb-1">
+                      <Clock className="h-4 w-4 mr-1" />
+                      Pending
+                    </div>
+                    <div className="text-2xl font-bold text-yellow-700">{pendingTasks}</div>
+                  </div>
+                  <div className="bg-red-50 p-4 rounded-lg">
+                    <div className="font-medium text-red-700 flex items-center mb-1">
+                      <AlertCircle className="h-4 w-4 mr-1" />
+                      At Risk
+                    </div>
+                    <div className="text-2xl font-bold text-red-700">{atRiskTasks}</div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-border">
+                  <h4 className="text-sm font-medium mb-3">Upcoming Deadlines</h4>
+                  <div className="space-y-3">
+                    {tasks
+                      .filter(task => task.status !== 'completed')
+                      .sort((a, b) => (a.dueDate || '').localeCompare(b.dueDate || ''))
+                      .slice(0, 3)
+                      .map(task => (
+                        <div key={task.id} className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className={`w-2 h-2 rounded-full mr-2 ${
+                              task.status === 'at-risk' ? 'bg-red-500' : 'bg-yellow-500'
+                            }`} />
+                            <span className="text-sm">{task.title}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">Due: {task.dueDate}</span>
                         </div>
-                        <Button 
-                          variant={item.status === 'complete' ? "ghost" : "outline"} 
-                          size="sm"
-                        >
-                          {item.status === 'complete' ? 'View' : 'Complete'}
-                        </Button>
-                      </div>
-                    </div>
+                      ))
+                    }
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Security Risks</CardTitle>
-              <CardDescription>Identified issues to address</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {riskItems.map((item) => (
-                  <div key={item.id} className="p-3 border rounded-lg">
-                    <div className="flex items-center mb-2">
-                      <div className={cn(
-                        "p-1 rounded-full mr-2",
-                        item.severity === 'high' ? "bg-red-50" :
-                        item.severity === 'medium' ? "bg-yellow-50" :
-                        "bg-blue-50"
-                      )}>
-                        <AlertTriangle className={cn(
-                          "h-4 w-4",
-                          item.severity === 'high' ? "text-red-600" :
-                          item.severity === 'medium' ? "text-yellow-600" :
-                          "text-blue-600"
-                        )} />
-                      </div>
-                      <div className="flex-1 font-medium">
-                        <span className={cn(
-                          "text-xs px-2 py-0.5 rounded-full uppercase",
-                          item.severity === 'high' ? "bg-red-50 text-red-700" :
-                          item.severity === 'medium' ? "bg-yellow-50 text-yellow-700" :
-                          "bg-blue-50 text-blue-700"
-                        )}>
-                          {item.severity}
-                        </span>
-                        <span className="ml-2">{item.title}</span>
-                      </div>
-                    </div>
-                    <div className="text-sm text-muted-foreground ml-7">
-                      {item.description}
-                    </div>
-                  </div>
-                ))}
+                </div>
               </div>
             </CardContent>
             <CardFooter className="border-t pt-4">
-              <Button variant="outline" className="w-full">
-                View All Risks
+              <Button size="sm" className="ml-auto">
+                Download Report
+              </Button>
+            </CardFooter>
+          </Card>
+
+          {/* HIPAA Requirements */}
+          <Card className="flex-1">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center">
+                <FileCheck className="h-5 w-5 mr-2 text-primary" />
+                Key Requirements
+              </CardTitle>
+              <CardDescription>
+                Essential HIPAA requirements your organization must meet
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center">
+                  <div className="p-2 rounded-full bg-green-50 mr-3">
+                    <Shield className="h-4 w-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium">Privacy Rule</h4>
+                    <p className="text-xs text-muted-foreground">Protections for PHI and patient rights</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <div className="p-2 rounded-full bg-blue-50 mr-3">
+                    <Lock className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium">Security Rule</h4>
+                    <p className="text-xs text-muted-foreground">Administrative, physical & technical safeguards</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <div className="p-2 rounded-full bg-purple-50 mr-3">
+                    <User className="h-4 w-4 text-purple-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium">Breach Notification</h4>
+                    <p className="text-xs text-muted-foreground">Reporting processes for data breaches</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <div className="p-2 rounded-full bg-orange-50 mr-3">
+                    <FileText className="h-4 w-4 text-orange-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium">Documentation</h4>
+                    <p className="text-xs text-muted-foreground">Required policies and procedures</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="pt-3 border-t border-border">
+                <h4 className="text-sm font-medium mb-2">Compliance Timeline</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Last Security Risk Analysis</span>
+                    <span className="font-medium">January 15, 2025</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Next Required Training</span>
+                    <span className="font-medium">May 30, 2025</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Policy Review Due</span>
+                    <span className="font-medium">June 15, 2025</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="border-t pt-4">
+              <Button size="sm" variant="outline">
+                View HIPAA Guidelines
               </Button>
             </CardFooter>
           </Card>
         </div>
+
+        {/* Compliance Tasks */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Compliance Tasks</CardTitle>
+            <CardDescription>
+              Track and manage your organization's HIPAA compliance tasks
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="mb-4">
+                <TabsTrigger value="all">All Tasks</TabsTrigger>
+                <TabsTrigger value="administrative">Administrative</TabsTrigger>
+                <TabsTrigger value="technical">Technical</TabsTrigger>
+                <TabsTrigger value="physical">Physical</TabsTrigger>
+                <TabsTrigger value="at-risk">At Risk</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="all">
+                <div className="rounded-md border">
+                  <div className="relative w-full overflow-auto">
+                    <table className="w-full caption-bottom text-sm">
+                      <thead className="[&_tr]:border-b">
+                        <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Task
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Category
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Due Date
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Assigned To
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Status
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="[&_tr:last-child]:border-0">
+                        {tasks.map((task) => (
+                          <tr key={task.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                            <td className="p-4 align-middle">
+                              <div>
+                                <div className="font-medium">{task.title}</div>
+                                <div className="text-xs text-muted-foreground">{task.description}</div>
+                              </div>
+                            </td>
+                            <td className="p-4 align-middle capitalize">{task.category}</td>
+                            <td className="p-4 align-middle">
+                              <div className="flex items-center">
+                                <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                                {task.dueDate || 'N/A'}
+                              </div>
+                            </td>
+                            <td className="p-4 align-middle">{task.assignedTo || 'Unassigned'}</td>
+                            <td className="p-4 align-middle">
+                              {getStatusBadge(task.status)}
+                            </td>
+                            <td className="p-4 align-middle">
+                              <div className="flex space-x-2">
+                                {task.status !== 'completed' ? (
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => handleMarkAsComplete(task.id)}
+                                  >
+                                    Complete
+                                  </Button>
+                                ) : (
+                                  <Button variant="ghost" size="sm" disabled>
+                                    Completed
+                                  </Button>
+                                )}
+                                <Button variant="ghost" size="sm">Details</Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Filter tabs just show a filtered version of the same content */}
+              <TabsContent value="administrative">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">
+                    Filtered by: Administrative Tasks
+                  </p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="technical">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">
+                    Filtered by: Technical Tasks
+                  </p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="physical">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">
+                    Filtered by: Physical Safeguards
+                  </p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="at-risk">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">
+                    Filtered by: At Risk Tasks
+                  </p>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+          <CardFooter className="border-t p-4 flex items-center justify-between">
+            <div className="text-sm text-muted-foreground">
+              Showing <span className="font-medium">{tasks.length}</span> compliance tasks
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline" size="sm">Export Tasks</Button>
+              <Button size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                New Task
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
       </div>
     </AppLayout>
   );

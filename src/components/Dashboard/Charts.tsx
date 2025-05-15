@@ -7,7 +7,6 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer,
   AreaChart as RechartsAreaChart,
   BarChart as RechartsBarChart
 } from 'recharts';
@@ -27,7 +26,7 @@ export const AreaChart = ({ data, categories, colors, height = 300 }: ChartProps
       color: colors[index] || "hsl(var(--primary))"
     };
     return acc;
-  }, {} as any);
+  }, {} as Record<string, { label: string; color: string }>);
 
   return (
     <ChartContainer config={config}>
@@ -66,7 +65,7 @@ export const BarChart = ({ data, categories, colors, height = 300 }: ChartProps)
       color: colors[index] || "hsl(var(--primary))"
     };
     return acc;
-  }, {} as any);
+  }, {} as Record<string, { label: string; color: string }>);
 
   return (
     <ChartContainer config={config}>

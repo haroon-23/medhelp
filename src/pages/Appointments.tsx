@@ -2,250 +2,270 @@
 import React, { useState } from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import AppointmentForm from '@/components/Appointments/AppointmentForm';
+import CalComIntegration from '@/components/Appointments/CalComIntegration';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Calendar as CalendarIcon } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+import { Calendar, Clock, Users, Plus, Filter, FileText } from 'lucide-react';
 
-// Mock appointment data
-const appointments = [
+interface AppointmentType {
+  id: string;
+  title: string;
+  patient: string;
+  doctor: string;
+  date: string;
+  time: string;
+  status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
+  type: string;
+}
+
+const appointmentsData: AppointmentType[] = [
   {
-    id: "APT-1001",
-    patientName: "Robert Chen",
-    patientId: "PT-1001",
-    date: new Date(2024, 10, 15, 10, 30),
-    type: "Follow-up",
-    status: "Scheduled",
-    doctor: "Dr. Sarah Johnson"
+    id: 'apt1',
+    title: 'Annual Physical',
+    patient: 'John Doe',
+    doctor: 'Dr. Sarah Johnson',
+    date: '2025-05-16',
+    time: '10:00 AM',
+    status: 'scheduled',
+    type: 'Check-up'
   },
   {
-    id: "APT-1002",
-    patientName: "Lisa Johnson",
-    patientId: "PT-1002",
-    date: new Date(2024, 10, 16, 11, 0),
-    type: "New Patient",
-    status: "Confirmed",
-    doctor: "Dr. James Peterson"
+    id: 'apt2',
+    title: 'Follow-up Consultation',
+    patient: 'Emily Wilson',
+    doctor: 'Dr. Michael Chen',
+    date: '2025-05-16',
+    time: '11:30 AM',
+    status: 'scheduled',
+    type: 'Follow-up'
   },
   {
-    id: "APT-1003",
-    patientName: "Marcus Williams",
-    patientId: "PT-1003",
-    date: new Date(2024, 10, 15, 14, 15),
-    type: "Annual Physical",
-    status: "Scheduled",
-    doctor: "Dr. Sarah Johnson"
+    id: 'apt3',
+    title: 'Vaccination',
+    patient: 'Robert Garcia',
+    doctor: 'Dr. James Wilson',
+    date: '2025-05-16',
+    time: '01:45 PM',
+    status: 'scheduled',
+    type: 'Procedure'
   },
   {
-    id: "APT-1004",
-    patientName: "Emma Garcia",
-    patientId: "PT-1004",
-    date: new Date(2024, 10, 17, 9, 0),
-    type: "Lab Work",
-    status: "Pending",
-    doctor: "Dr. Michael Thompson"
-  }
+    id: 'apt4',
+    title: 'Dermatology Consultation',
+    patient: 'Maria Rodriguez',
+    doctor: 'Dr. Sarah Johnson',
+    date: '2025-05-15',
+    time: '09:15 AM',
+    status: 'completed',
+    type: 'Specialist'
+  },
+  {
+    id: 'apt5',
+    title: 'Blood Work',
+    patient: 'Lisa Johnson',
+    doctor: 'Dr. Michael Chen',
+    date: '2025-05-15',
+    time: '10:30 AM',
+    status: 'completed',
+    type: 'Lab'
+  },
+  {
+    id: 'apt6',
+    title: 'Cardiology Follow-up',
+    patient: 'John Doe',
+    doctor: 'Dr. James Wilson',
+    date: '2025-05-14',
+    time: '02:00 PM',
+    status: 'no-show',
+    type: 'Specialist'
+  },
 ];
 
 const Appointments = () => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  
-  const getStatusBadge = (status: string) => {
+  const [activeTab, setActiveTab] = useState('upcoming');
+  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  const [showCalIntegration, setShowCalIntegration] = useState(false);
+
+  const getStatusBadge = (status: AppointmentType['status']) => {
     switch (status) {
-      case 'Scheduled':
+      case 'scheduled':
         return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">Scheduled</Badge>;
-      case 'Confirmed':
-        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Confirmed</Badge>;
-      case 'Pending':
-        return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">Pending</Badge>;
-      case 'Cancelled':
+      case 'completed':
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Completed</Badge>;
+      case 'cancelled':
         return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Cancelled</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
+      case 'no-show':
+        return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">No Show</Badge>;
     }
-  };
-  
-  // Filter appointments by selected date
-  const filteredAppointments = appointments.filter(appointment => {
-    if (!date) return true;
-    
-    return (
-      appointment.date.getDate() === date.getDate() &&
-      appointment.date.getMonth() === date.getMonth() &&
-      appointment.date.getFullYear() === date.getFullYear()
-    );
-  });
-  
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit', 
-      hour12: true 
-    });
   };
 
   return (
     <AppLayout title="Appointments">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1">
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-medium">Calendar</h2>
-              <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm">
-                    <Plus className="mr-1 h-4 w-4" />
-                    New
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-lg">
-                  <DialogHeader>
-                    <DialogTitle>Schedule New Appointment</DialogTitle>
-                  </DialogHeader>
-                  <AppointmentForm />
-                </DialogContent>
-              </Dialog>
-            </div>
-            
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className="rounded-md border"
-            />
-            
-            <div className="mt-4">
-              <h3 className="text-sm font-medium mb-2">Upcoming Schedule</h3>
-              <div className="space-y-2">
-                {filteredAppointments.length === 0 ? (
-                  <p className="text-sm text-muted-foreground px-2 py-4 text-center">
-                    No appointments scheduled for this date
-                  </p>
-                ) : (
-                  filteredAppointments.map(appointment => (
-                    <div 
-                      key={appointment.id} 
-                      className="p-2 border rounded-md text-sm hover:bg-muted/50 cursor-pointer"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium">{formatTime(appointment.date)}</span>
-                        {getStatusBadge(appointment.status)}
-                      </div>
-                      <div>{appointment.patientName}</div>
-                      <div className="text-xs text-muted-foreground">{appointment.type}</div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </Card>
+      <div className="space-y-6">
+        {/* Action buttons */}
+        <div className="flex justify-between">
+          <div className="flex space-x-2">
+            <Button onClick={() => {
+              setShowAppointmentForm(true);
+              setShowCalIntegration(false);
+            }}>
+              <Plus className="h-4 w-4 mr-2" />
+              New Appointment
+            </Button>
+            <Button variant="outline" onClick={() => {
+              setShowCalIntegration(true);
+              setShowAppointmentForm(false);
+            }}>
+              <Calendar className="h-4 w-4 mr-2" />
+              Cal.com Integration
+            </Button>
+          </div>
+          <Button variant="outline">
+            <Filter className="h-4 w-4 mr-2" />
+            Filter
+          </Button>
         </div>
-        
-        <div className="lg:col-span-2">
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-bold flex items-center">
-                  <CalendarIcon className="mr-2 h-5 w-5" />
-                  {date ? date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'All Appointments'}
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  {filteredAppointments.length} appointments scheduled
-                </p>
-              </div>
-              
-              <Tabs defaultValue="all">
-                <TabsList>
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="scheduled">Scheduled</TabsTrigger>
-                  <TabsTrigger value="confirmed">Confirmed</TabsTrigger>
-                  <TabsTrigger value="pending">Pending</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-            
-            <div className="space-y-4">
-              {filteredAppointments.length > 0 ? (
-                filteredAppointments.map((appointment) => (
-                  <div 
-                    key={appointment.id}
-                    className={cn(
-                      "flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg",
-                      appointment.status === "Confirmed" && "border-l-4 border-l-green-500",
-                      appointment.status === "Pending" && "border-l-4 border-l-yellow-500",
-                      appointment.status === "Scheduled" && "border-l-4 border-l-blue-500",
-                      appointment.status === "Cancelled" && "border-l-4 border-l-red-500"
-                    )}
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4 sm:mb-0">
-                      <div className="p-3 bg-primary/10 rounded-full">
-                        <CalendarIcon className="h-5 w-5 text-primary" />
-                      </div>
-                      
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium">{appointment.patientName}</h3>
-                          <span className="text-xs text-muted-foreground">{appointment.patientId}</span>
-                        </div>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-1">
-                          <div className="flex items-center text-sm">
-                            <span className="text-muted-foreground mr-1">Time:</span>
-                            {formatTime(appointment.date)}
-                          </div>
-                          
-                          <div className="flex items-center text-sm">
-                            <span className="text-muted-foreground mr-1">Type:</span>
-                            {appointment.type}
-                          </div>
-                          
-                          <div className="flex items-center text-sm">
-                            <span className="text-muted-foreground mr-1">Doctor:</span>
-                            {appointment.doctor}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 self-end sm:self-center">
-                      {getStatusBadge(appointment.status)}
-                      <Button variant="outline" size="sm">View</Button>
-                      <Button variant="ghost" size="sm">Edit</Button>
-                    </div>
+
+        {/* Forms */}
+        {showAppointmentForm && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Schedule Appointment</CardTitle>
+              <CardDescription>Enter appointment details below</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AppointmentForm />
+            </CardContent>
+            <CardFooter className="border-t pt-5">
+              <Button variant="outline" className="ml-auto" onClick={() => setShowAppointmentForm(false)}>
+                Cancel
+              </Button>
+            </CardFooter>
+          </Card>
+        )}
+
+        {showCalIntegration && (
+          <CalComIntegration />
+        )}
+
+        {/* Appointments list */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Appointments</CardTitle>
+            <CardDescription>
+              Manage all patient appointments
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="upcoming" value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="mb-4">
+                <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+                <TabsTrigger value="past">Past</TabsTrigger>
+                <TabsTrigger value="cancelled">Cancelled</TabsTrigger>
+                <TabsTrigger value="all">All</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="upcoming">
+                <div className="rounded-md border">
+                  <div className="relative w-full overflow-auto">
+                    <table className="w-full caption-bottom text-sm">
+                      <thead className="[&_tr]:border-b">
+                        <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Appointment
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Patient
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Provider
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Date & Time
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Status
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="[&_tr:last-child]:border-0">
+                        {appointmentsData
+                          .filter(apt => apt.status === 'scheduled')
+                          .map((appointment) => (
+                            <tr key={appointment.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                              <td className="p-4 align-middle">
+                                <div>
+                                  <div className="font-medium">{appointment.title}</div>
+                                  <div className="text-xs text-muted-foreground">{appointment.type}</div>
+                                </div>
+                              </td>
+                              <td className="p-4 align-middle">
+                                <div className="flex items-center">
+                                  <Users className="h-4 w-4 mr-2 text-muted-foreground" />
+                                  {appointment.patient}
+                                </div>
+                              </td>
+                              <td className="p-4 align-middle">{appointment.doctor}</td>
+                              <td className="p-4 align-middle">
+                                <div className="flex flex-col">
+                                  <div className="flex items-center">
+                                    <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                                    {appointment.date}
+                                  </div>
+                                  <div className="flex items-center mt-1">
+                                    <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
+                                    {appointment.time}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-4 align-middle">
+                                {getStatusBadge(appointment.status)}
+                              </td>
+                              <td className="p-4 align-middle">
+                                <div className="flex space-x-2">
+                                  <Button variant="ghost" size="sm">Edit</Button>
+                                  <Button variant="ghost" size="sm">Cancel</Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
                   </div>
-                ))
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="rounded-full p-3 bg-muted">
-                    <CalendarIcon className="h-6 w-6 text-muted-foreground" />
-                  </div>
-                  <h3 className="mt-4 text-lg font-medium">No appointments found</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    No appointments scheduled for this date.
-                  </p>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="mt-4">
-                        <Plus className="mr-2 h-4 w-4" />
-                        Schedule New Appointment
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-lg">
-                      <DialogHeader>
-                        <DialogTitle>Schedule New Appointment</DialogTitle>
-                      </DialogHeader>
-                      <AppointmentForm />
-                    </DialogContent>
-                  </Dialog>
                 </div>
-              )}
-            </div>
-          </Card>
-        </div>
+              </TabsContent>
+
+              <TabsContent value="past">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">Filter applied: Past Appointments</p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="cancelled">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">Filter applied: Cancelled Appointments</p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="all">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">Showing all appointments</p>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+          <CardFooter className="border-t pt-5">
+            <Button variant="outline" className="ml-auto">
+              <FileText className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
     </AppLayout>
   );

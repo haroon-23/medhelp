@@ -1,284 +1,342 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Wallet, Plus, Download, CreditCard, DollarSign, FileText, Search, Filter } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { DollarSign, Search, Filter, Calendar, ArrowDownUp, Plus, FileText, CheckSquare, File, X } from 'lucide-react';
+import { toast } from 'sonner';
+
+interface BillingRecord {
+  id: string;
+  patientName: string;
+  patientId: string;
+  serviceDate: string;
+  description: string;
+  amount: number;
+  insuranceProvider: string;
+  status: 'paid' | 'pending' | 'denied';
+  claimNumber?: string;
+}
+
+const billingSampleData: BillingRecord[] = [
+  {
+    id: 'bill1',
+    patientName: 'John Doe',
+    patientId: 'P12345',
+    serviceDate: '2025-04-10',
+    description: 'Annual Physical',
+    amount: 250.00,
+    insuranceProvider: 'Blue Cross',
+    status: 'paid',
+    claimNumber: 'BC-2025-04578'
+  },
+  {
+    id: 'bill2',
+    patientName: 'Emily Wilson',
+    patientId: 'P67890',
+    serviceDate: '2025-04-15',
+    description: 'Lab Work - Comprehensive Panel',
+    amount: 175.50,
+    insuranceProvider: 'Aetna',
+    status: 'pending',
+    claimNumber: 'AE-2025-12354'
+  },
+  {
+    id: 'bill3',
+    patientName: 'Maria Rodriguez',
+    patientId: 'P34567',
+    serviceDate: '2025-04-12',
+    description: 'Cardiology Consultation',
+    amount: 350.00,
+    insuranceProvider: 'Medicare',
+    status: 'paid',
+    claimNumber: 'MC-2025-78542'
+  },
+  {
+    id: 'bill4',
+    patientName: 'Robert Garcia',
+    patientId: 'P23456',
+    serviceDate: '2025-04-18',
+    description: 'MRI - Shoulder',
+    amount: 1250.75,
+    insuranceProvider: 'United Healthcare',
+    status: 'denied',
+    claimNumber: 'UH-2025-96325'
+  },
+  {
+    id: 'bill5',
+    patientName: 'Lisa Johnson',
+    patientId: 'P78901',
+    serviceDate: '2025-04-20',
+    description: 'Urgent Care Visit',
+    amount: 125.00,
+    insuranceProvider: 'Cigna',
+    status: 'paid',
+    claimNumber: 'CG-2025-36541'
+  },
+  {
+    id: 'bill6',
+    patientName: 'John Doe',
+    patientId: 'P12345',
+    serviceDate: '2025-04-25',
+    description: 'Follow-up Visit',
+    amount: 150.00,
+    insuranceProvider: 'Blue Cross',
+    status: 'pending',
+    claimNumber: 'BC-2025-04895'
+  },
+];
 
 const Billing = () => {
-  const invoices = [
-    {
-      id: 'INV-001',
-      patient: 'John Doe',
-      date: '2025-05-10',
-      amount: 245.00,
-      status: 'Paid',
-      items: [
-        { description: 'Office Visit', amount: 150.00 },
-        { description: 'Lab Tests', amount: 95.00 }
-      ]
-    },
-    {
-      id: 'INV-002',
-      patient: 'Emily Wilson',
-      date: '2025-05-09',
-      amount: 175.00,
-      status: 'Pending',
-      items: [
-        { description: 'Follow-up Visit', amount: 125.00 },
-        { description: 'Prescription', amount: 50.00 }
-      ]
-    },
-    {
-      id: 'INV-003',
-      patient: 'Robert Brown',
-      date: '2025-05-08',
-      amount: 350.00,
-      status: 'Overdue',
-      items: [
-        { description: 'Specialist Consultation', amount: 250.00 },
-        { description: 'Imaging', amount: 100.00 }
-      ]
-    },
-    {
-      id: 'INV-004',
-      patient: 'Maria Garcia',
-      date: '2025-05-07',
-      amount: 125.00,
-      status: 'Paid',
-      items: [
-        { description: 'Vaccination', amount: 75.00 },
-        { description: 'Office Visit', amount: 50.00 }
-      ]
-    },
-    {
-      id: 'INV-005',
-      patient: 'David Lee',
-      date: '2025-05-06',
-      amount: 215.00,
-      status: 'Pending',
-      items: [
-        { description: 'Physical Therapy', amount: 185.00 },
-        { description: 'Medical Supplies', amount: 30.00 }
-      ]
+  const [billingRecords, setBillingRecords] = useState<BillingRecord[]>(billingSampleData);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) {
+      setBillingRecords(billingSampleData);
+      return;
     }
-  ];
+    
+    const filteredRecords = billingSampleData.filter(record => 
+      record.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      record.patientId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (record.claimNumber && record.claimNumber.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+    
+    setBillingRecords(filteredRecords);
+    toast.info(`Found ${filteredRecords.length} matching billing records`);
+  };
+
+  const getStatusBadge = (status: 'paid' | 'pending' | 'denied') => {
+    switch (status) {
+      case 'paid':
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200"><CheckSquare className="mr-1 h-3 w-3" /> Paid</Badge>;
+      case 'pending':
+        return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200"><File className="mr-1 h-3 w-3" /> Pending</Badge>;
+      case 'denied':
+        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200"><X className="mr-1 h-3 w-3" /> Denied</Badge>;
+    }
+  };
+
+  const totalPaid = billingRecords
+    .filter(record => record.status === 'paid')
+    .reduce((sum, record) => sum + record.amount, 0);
+  
+  const totalPending = billingRecords
+    .filter(record => record.status === 'pending')
+    .reduce((sum, record) => sum + record.amount, 0);
 
   return (
     <AppLayout title="Billing">
-      <div className="grid gap-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Billing & Invoices</h2>
-            <p className="text-muted-foreground">
-              Manage patient billing and financial transactions
-            </p>
-          </div>
-          <Button className="gap-1">
-            <Plus className="h-4 w-4" />
-            New Invoice
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
+      <div className="space-y-6">
+        {/* Billing Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Total Revenue</CardTitle>
-              <CardDescription>Current Month</CardDescription>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Paid</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="mr-4 p-2 bg-primary/10 rounded-full">
-                    <DollarSign className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">$24,568</div>
-                    <div className="text-xs text-muted-foreground">+12% from last month</div>
-                  </div>
+              <div className="flex items-center">
+                <div className="mr-2 p-2 bg-green-100 rounded">
+                  <DollarSign className="h-4 w-4 text-green-500" />
                 </div>
+                <div className="text-2xl font-bold">${totalPaid.toFixed(2)}</div>
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Outstanding</CardTitle>
-              <CardDescription>Unpaid Invoices</CardDescription>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Pending Claims</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="mr-4 p-2 bg-yellow-50 rounded-full">
-                    <Wallet className="h-6 w-6 text-yellow-600" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">$4,250</div>
-                    <div className="text-xs text-muted-foreground">12 invoices pending</div>
-                  </div>
+              <div className="flex items-center">
+                <div className="mr-2 p-2 bg-yellow-100 rounded">
+                  <File className="h-4 w-4 text-yellow-500" />
                 </div>
+                <div className="text-2xl font-bold">${totalPending.toFixed(2)}</div>
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-white">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Insurance Claims</CardTitle>
-              <CardDescription>Processing Status</CardDescription>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Insurance Claims</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="mr-4 p-2 bg-blue-50 rounded-full">
-                    <FileText className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">28</div>
-                    <div className="text-xs text-muted-foreground">8 pending approval</div>
-                  </div>
+              <div className="flex items-center">
+                <div className="mr-2 p-2 bg-blue-100 rounded">
+                  <FileText className="h-4 w-4 text-blue-500" />
                 </div>
+                <div className="text-2xl font-bold">{billingRecords.length}</div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <Tabs defaultValue="all">
-          <div className="flex justify-between items-center mb-4">
-            <TabsList>
-              <TabsTrigger value="all">All Invoices</TabsTrigger>
-              <TabsTrigger value="pending">Pending</TabsTrigger>
-              <TabsTrigger value="paid">Paid</TabsTrigger>
-              <TabsTrigger value="overdue">Overdue</TabsTrigger>
-            </TabsList>
-            
-            <div className="flex gap-2">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search invoices..."
-                  className="pl-8 w-[250px]"
-                />
+        {/* Main Billing Table */}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
+              <div>
+                <CardTitle>Billing Records</CardTitle>
+                <CardDescription className="mt-1">
+                  Manage patient billing and insurance claims
+                </CardDescription>
               </div>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-              </Button>
+              <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+                <form onSubmit={handleSearch} className="flex space-x-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input 
+                      placeholder="Search patient or claim #" 
+                      className="pl-8"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  <Button type="submit" variant="secondary">Search</Button>
+                </form>
+                <div className="flex space-x-2">
+                  <Button variant="outline">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Filter
+                  </Button>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Claim
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="all">
+              <div className="flex justify-between items-center">
+                <TabsList>
+                  <TabsTrigger value="all">All Claims</TabsTrigger>
+                  <TabsTrigger value="paid">Paid</TabsTrigger>
+                  <TabsTrigger value="pending">Pending</TabsTrigger>
+                  <TabsTrigger value="denied">Denied</TabsTrigger>
+                </TabsList>
+                <Select defaultValue="newest">
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Sort By" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest First</SelectItem>
+                    <SelectItem value="oldest">Oldest First</SelectItem>
+                    <SelectItem value="amount-high">Amount (High-Low)</SelectItem>
+                    <SelectItem value="amount-low">Amount (Low-High)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <TabsContent value="all">
-            <Card>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Invoice ID</TableHead>
-                      <TableHead>Patient</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {invoices.map((invoice) => (
-                      <TableRow key={invoice.id}>
-                        <TableCell className="font-medium">{invoice.id}</TableCell>
-                        <TableCell>{invoice.patient}</TableCell>
-                        <TableCell>{invoice.date}</TableCell>
-                        <TableCell>${invoice.amount.toFixed(2)}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant="outline"
-                            className={cn(
-                              invoice.status === "Paid" && "border-green-500 text-green-700 bg-green-50",
-                              invoice.status === "Pending" && "border-yellow-500 text-yellow-700 bg-yellow-50",
-                              invoice.status === "Overdue" && "border-red-500 text-red-700 bg-red-50"
-                            )}
-                          >
-                            {invoice.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="outline" size="sm">
-                              <CreditCard className="h-4 w-4 mr-1" />
-                              Pay
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Download className="h-4 w-4 mr-1" />
-                              PDF
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-              <CardFooter className="flex justify-between border-t px-6 py-4">
-                <div className="text-xs text-muted-foreground">
-                  Showing 5 of 24 invoices
+              <TabsContent value="all" className="mt-4">
+                <div className="rounded-md border">
+                  <div className="relative w-full overflow-auto">
+                    <table className="w-full caption-bottom text-sm">
+                      <thead className="[&_tr]:border-b">
+                        <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            <div className="flex items-center">
+                              Patient
+                              <ArrowDownUp className="ml-1 h-3 w-3" />
+                            </div>
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Patient ID
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            <div className="flex items-center">
+                              Service Date
+                              <ArrowDownUp className="ml-1 h-3 w-3" />
+                            </div>
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Description
+                          </th>
+                          <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
+                            <div className="flex items-center justify-end">
+                              Amount
+                              <ArrowDownUp className="ml-1 h-3 w-3" />
+                            </div>
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Insurance
+                          </th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                            Status
+                          </th>
+                          <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="[&_tr:last-child]:border-0">
+                        {billingRecords.map((record) => (
+                          <tr key={record.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                            <td className="p-4 align-middle font-medium">{record.patientName}</td>
+                            <td className="p-4 align-middle">{record.patientId}</td>
+                            <td className="p-4 align-middle">
+                              <div className="flex items-center">
+                                <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                                {record.serviceDate}
+                              </div>
+                            </td>
+                            <td className="p-4 align-middle">{record.description}</td>
+                            <td className="p-4 align-middle text-right font-medium">
+                              ${record.amount.toFixed(2)}
+                            </td>
+                            <td className="p-4 align-middle">{record.insuranceProvider}</td>
+                            <td className="p-4 align-middle">
+                              {getStatusBadge(record.status)}
+                            </td>
+                            <td className="p-4 align-middle text-right">
+                              <Button variant="ghost" size="sm">Details</Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" disabled>
-                    Previous
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Next
-                  </Button>
+              </TabsContent>
+
+              <TabsContent value="paid" className="mt-4">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">Filter applied: Paid Claims</p>
                 </div>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="pending">
-            <Card>
-              <CardContent className="py-6">
-                <div className="text-center">
-                  <Wallet className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium">Pending Invoices</h3>
-                  <p className="text-muted-foreground mt-2">
-                    View and manage invoices awaiting payment
-                  </p>
+              </TabsContent>
+
+              <TabsContent value="pending" className="mt-4">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">Filter applied: Pending Claims</p>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="paid">
-            <Card>
-              <CardContent className="py-6">
-                <div className="text-center">
-                  <DollarSign className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium">Paid Invoices</h3>
-                  <p className="text-muted-foreground mt-2">
-                    View and manage invoices that have been paid
-                  </p>
+              </TabsContent>
+
+              <TabsContent value="denied" className="mt-4">
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground">Filter applied: Denied Claims</p>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="overdue">
-            <Card>
-              <CardContent className="py-6">
-                <div className="text-center">
-                  <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium">Overdue Invoices</h3>
-                  <p className="text-muted-foreground mt-2">
-                    View and manage overdue invoices
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+          <CardFooter className="border-t p-4 flex items-center justify-between">
+            <div className="text-sm text-muted-foreground">
+              Showing <span className="font-medium">{billingRecords.length}</span> billing records
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline" size="sm" disabled>Previous</Button>
+              <Button variant="outline" size="sm">Next</Button>
+            </div>
+          </CardFooter>
+        </Card>
       </div>
     </AppLayout>
   );
