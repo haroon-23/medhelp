@@ -28,7 +28,7 @@ const RoleSelector = () => {
         {[
           {
             title: "Doctor",
-            icon: <User className="h-10 w-10 text-blue-600" />,
+            icon: <User className="h-12 w-12 text-blue-600" />,
             iconBg: "bg-blue-100",
             description: "Access patient records, appointments, and voice bot analytics",
             features: [
@@ -40,7 +40,7 @@ const RoleSelector = () => {
           },
           {
             title: "Staff",
-            icon: <Users className="h-10 w-10 text-indigo-600" />,
+            icon: <Users className="h-12 w-12 text-indigo-600" />,
             iconBg: "bg-indigo-100",
             description: "Manage appointments, billing, and basic patient information",
             features: [
@@ -52,7 +52,7 @@ const RoleSelector = () => {
           },
           {
             title: "Administrator",
-            icon: <Shield className="h-10 w-10 text-purple-600" />,
+            icon: <Shield className="h-12 w-12 text-purple-600" />,
             iconBg: "bg-purple-100",
             description: "Complete system access with HIPAA compliance and reporting",
             features: [
@@ -63,18 +63,22 @@ const RoleSelector = () => {
             role: "admin"
           }
         ].map((role, index) => (
-          <Card key={index} className="shadow-lg border-2 overflow-hidden h-full hover:shadow-xl transition-shadow duration-300">
-            <CardHeader className="pb-6 pt-8 bg-slate-50">
-              <div className={`p-4 w-20 h-20 ${role.iconBg} rounded-lg flex items-center justify-center mb-5 mx-auto`}>
-                {role.icon}
+          <Card key={index} className="border-2 h-full hover:shadow-lg transition-shadow duration-300 flex flex-col">
+            <CardHeader className="pb-4 pt-6 bg-slate-50">
+              <div className="flex items-center mb-4">
+                <div className={`p-3 h-16 w-16 ${role.iconBg} rounded-lg flex items-center justify-center mr-4`}>
+                  {role.icon}
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="text-2xl font-bold mb-1">{role.title}</CardTitle>
+                  <CardDescription className="text-sm">
+                    {role.description}
+                  </CardDescription>
+                </div>
               </div>
-              <CardTitle className="text-2xl font-bold text-center mb-2">{role.title}</CardTitle>
-              <CardDescription className="text-base text-center">
-                {role.description}
-              </CardDescription>
             </CardHeader>
-            <CardContent className="py-6 px-8 flex-grow">
-              <ul className="space-y-5">
+            <CardContent className="py-4 px-6 flex-grow">
+              <ul className="space-y-4">
                 {role.features.map((feature, idx) => (
                   <li key={idx} className="flex items-center gap-3">
                     <span className="bg-green-100 p-1.5 rounded-full flex-shrink-0">
@@ -85,9 +89,9 @@ const RoleSelector = () => {
                 ))}
               </ul>
             </CardContent>
-            <CardFooter className="pt-4 pb-8 px-8 bg-slate-50">
+            <CardFooter className="pt-3 pb-6 px-6 bg-slate-50">
               <Button 
-                className="w-full py-6 font-semibold text-lg" 
+                className="w-full py-5 font-semibold text-base" 
                 onClick={() => handleRoleSelect(role.role)}
               >
                 Log in as {role.title}
