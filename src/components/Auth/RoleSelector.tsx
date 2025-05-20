@@ -56,8 +56,8 @@ const RoleSelector = () => {
             className="border-2 rounded-lg hover:shadow-lg transition-all duration-300 animate-fade-in"
             style={{ animationDelay: `${index * 150}ms` }}
           >
-            <div className="flex flex-row">
-              <div className="p-6 bg-slate-50 flex items-center justify-center w-[200px] border-r">
+            <div className="flex flex-col md:flex-row">
+              <div className="p-6 bg-slate-50 flex items-center justify-center md:w-[200px] border-b md:border-b-0 md:border-r">
                 <div className={`p-6 ${role.iconBg} rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105`}>
                   {role.icon}
                 </div>
@@ -67,7 +67,7 @@ const RoleSelector = () => {
                 <div className="flex flex-col h-full">
                   <div className="p-6 pb-3">
                     <h3 className="text-2xl font-bold mb-2">{role.title}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
+                    <p className="text-sm text-muted-foreground">
                       {role.description}
                     </p>
                   </div>

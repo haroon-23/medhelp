@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import RoleBasedSidebar from './RoleBasedSidebar';
 import { cn } from '@/lib/utils';
-import { Bell, Search } from 'lucide-react';
+import { Bell, Search, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -29,6 +29,12 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
     }
   }, [navigate]);
 
+  const handleSignOut = () => {
+    localStorage.removeItem('userRole');
+    toast.success('Signed out successfully');
+    navigate('/');
+  };
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       <RoleBasedSidebar />
@@ -52,6 +58,15 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
             <Button variant="outline" size="icon" className="transition-all duration-300 hover:bg-secondary">
               <Bell className="h-4 w-4" />
               <span className="sr-only">Notifications</span>
+            </Button>
+
+            <Button 
+              variant="outline"
+              className="flex items-center gap-2 border-sidebar-foreground/20 text-sidebar-foreground"
+              onClick={handleSignOut}
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Sign Out</span>
             </Button>
             
             <span className="hipaa-badge">HIPAA Compliant</span>

@@ -203,6 +203,25 @@
   .flex-end {
     @apply flex items-center justify-end;
   }
+
+  /* Text overflow protection */
+  .text-safe {
+    @apply truncate overflow-hidden text-ellipsis;
+  }
+
+  /* Sidebar and nav item styling */
+  .nav-item {
+    @apply flex items-center gap-3 rounded-md px-3 py-2 hover:bg-sidebar-accent transition-colors;
+  }
+
+  .nav-item-active {
+    @apply bg-sidebar-accent font-medium;
+  }
+
+  /* Sign-out button styling */
+  .sign-out-button {
+    @apply w-full border-sidebar-foreground/20 text-sidebar-foreground flex items-center justify-center gap-2 py-2;
+  }
 }
 
 /* Animation utilities */
@@ -254,6 +273,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-wrap: break-word;
 }
 
 /* Fix for long words breaking layouts */
@@ -261,4 +281,15 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   hyphens: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-responsive {
+    @apply flex-col;
+  }
+  
+  .sidebar-responsive {
+    @apply w-full max-w-sm;
+  }
 }
