@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import AppointmentForm from '@/components/Appointments/AppointmentForm';
-import CalComIntegration from '@/components/Appointments/CalComIntegration';
+import CalendarIntegration from '@/components/Appointments/CalendarIntegration';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -101,12 +101,27 @@ const Appointments = () => {
     }
   };
 
+  // Filter appointments based on active tab
+  const getFilteredAppointments = () => {
+    switch (activeTab) {
+      case 'upcoming':
+        return appointmentsData.filter(apt => apt.status === 'scheduled');
+      case 'past':
+        return appointmentsData.filter(apt => apt.status === 'completed');
+      case 'cancelled':
+        return appointmentsData.filter(apt => ['cancelled', 'no-show'].includes(apt.status));
+      case 'all':
+      default:
+        return appointmentsData;
+    }
+  };
+
   return (
     <AppLayout title="Appointments">
       <div className="space-y-6">
         {/* Action buttons */}
-        <div className="flex justify-between">
-          <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2 justify-between">
+          <div className="flex flex-wrap gap-2">
             <Button onClick={() => {
               setShowAppointmentForm(true);
               setShowCalIntegration(false);
@@ -119,7 +134,7 @@ const Appointments = () => {
               setShowAppointmentForm(false);
             }}>
               <Calendar className="h-4 w-4 mr-2" />
-              Cal.com Integration
+              Calendar Integration
             </Button>
           </div>
           <Button variant="outline">
@@ -146,9 +161,7 @@ const Appointments = () => {
           </Card>
         )}
 
-        {showCalIntegration && (
-          <CalComIntegration />
-        )}
+        {showCalIntegration && <CalendarIntegration />}
 
         {/* Appointments list */}
         <Card>
@@ -167,7 +180,7 @@ const Appointments = () => {
                 <TabsTrigger value="all">All</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="upcoming">
+              <TabsContent value={activeTab}>
                 <div className="rounded-md border">
                   <div className="relative w-full overflow-auto">
                     <table className="w-full caption-bottom text-sm">
@@ -194,23 +207,22 @@ const Appointments = () => {
                         </tr>
                       </thead>
                       <tbody className="[&_tr:last-child]:border-0">
-                        {appointmentsData
-                          .filter(apt => apt.status === 'scheduled')
-                          .map((appointment) => (
+                        {getFilteredAppointments().length > 0 ? (
+                          getFilteredAppointments().map((appointment) => (
                             <tr key={appointment.id} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                               <td className="p-4 align-middle">
                                 <div>
-                                  <div className="font-medium">{appointment.title}</div>
+                                  <div className="font-medium truncate max-w-[150px]">{appointment.title}</div>
                                   <div className="text-xs text-muted-foreground">{appointment.type}</div>
                                 </div>
                               </td>
                               <td className="p-4 align-middle">
                                 <div className="flex items-center">
                                   <Users className="h-4 w-4 mr-2 text-muted-foreground" />
-                                  {appointment.patient}
+                                  <span className="truncate max-w-[120px]">{appointment.patient}</span>
                                 </div>
                               </td>
-                              <td className="p-4 align-middle">{appointment.doctor}</td>
+                              <td className="p-4 align-middle truncate max-w-[150px]">{appointment.doctor}</td>
                               <td className="p-4 align-middle">
                                 <div className="flex flex-col">
                                   <div className="flex items-center">
@@ -233,28 +245,29 @@ const Appointments = () => {
                                 </div>
                               </td>
                             </tr>
-                          ))}
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={6} className="h-24 text-center">
+                              <div className="flex flex-col items-center justify-center text-muted-foreground">
+                                <Calendar className="h-8 w-8 mb-2" />
+                                <p>No appointments found</p>
+                                <Button 
+                                  variant="link" 
+                                  onClick={() => {
+                                    setShowAppointmentForm(true);
+                                    setShowCalIntegration(false);
+                                  }}
+                                >
+                                  Schedule a new appointment
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="past">
-                <div className="p-8 text-center">
-                  <p className="text-muted-foreground">Filter applied: Past Appointments</p>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="cancelled">
-                <div className="p-8 text-center">
-                  <p className="text-muted-foreground">Filter applied: Cancelled Appointments</p>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="all">
-                <div className="p-8 text-center">
-                  <p className="text-muted-foreground">Showing all appointments</p>
                 </div>
               </TabsContent>
             </Tabs>

@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, LinkIcon, Check, Settings, ArrowRight } from 'lucide-react';
+import { Calendar, LinkIcon, Check, Settings, ArrowRight, Bell } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const CalendarIntegration = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -18,7 +19,8 @@ const CalendarIntegration = () => {
     automaticSync: true,
     sendReminders: true,
     aiAssistant: true,
-    autoFillForms: false
+    autoFillForms: false,
+    reminderTiming: '24'
   });
 
   const handleConnect = async (e: React.FormEvent) => {
@@ -53,21 +55,21 @@ const CalendarIntegration = () => {
     toast.info('Disconnected from Cal.com');
   };
 
-  const handleSettingChange = (setting: keyof typeof settings) => {
+  const handleSettingChange = (setting: keyof typeof settings, value: any) => {
     setSettings({
       ...settings,
-      [setting]: !settings[setting as keyof typeof settings]
+      [setting]: value
     });
     
     toast.success(`Setting updated: ${setting}`);
   };
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="overflow-hidden">
+      <CardHeader className="bg-card pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-xl">Cal.com Integration</CardTitle>
+            <CardTitle className="text-xl truncate">Cal.com Integration</CardTitle>
             <CardDescription>Connect your calendar and manage appointments</CardDescription>
           </div>
           <div className="p-2 bg-blue-50 rounded-full">
@@ -75,7 +77,7 @@ const CalendarIntegration = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         {!isConnected ? (
           <form onSubmit={handleConnect}>
             <div className="space-y-4">
@@ -101,7 +103,7 @@ const CalendarIntegration = () => {
                     onChange={(e) => setCalendarUrl(e.target.value)}
                     required
                   />
-                  <span className="flex items-center text-muted-foreground">.cal.com</span>
+                  <span className="flex items-center text-muted-foreground whitespace-nowrap">.cal.com</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   Enter your Cal.com username or custom URL
@@ -122,7 +124,7 @@ const CalendarIntegration = () => {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <div className="space-y-0.5">
-                  <Label htmlFor="automatic-sync">Automatic Sync</Label>
+                  <Label htmlFor="automatic-sync" className="text-sm">Automatic Sync</Label>
                   <p className="text-xs text-muted-foreground">
                     Automatically sync appointments with Cal.com
                   </p>
@@ -130,13 +132,13 @@ const CalendarIntegration = () => {
                 <Switch
                   id="automatic-sync"
                   checked={settings.automaticSync}
-                  onCheckedChange={() => handleSettingChange('automaticSync')}
+                  onCheckedChange={(checked) => handleSettingChange('automaticSync', checked)}
                 />
               </div>
               
               <div className="flex justify-between items-center">
                 <div className="space-y-0.5">
-                  <Label htmlFor="send-reminders">Send Reminders</Label>
+                  <Label htmlFor="send-reminders" className="text-sm">Send Reminders</Label>
                   <p className="text-xs text-muted-foreground">
                     Send automated reminders for appointments
                   </p>
@@ -144,13 +146,39 @@ const CalendarIntegration = () => {
                 <Switch
                   id="send-reminders"
                   checked={settings.sendReminders}
-                  onCheckedChange={() => handleSettingChange('sendReminders')}
+                  onCheckedChange={(checked) => handleSettingChange('sendReminders', checked)}
                 />
               </div>
+
+              {settings.sendReminders && (
+                <div className="ml-6 border-l-2 border-l-muted pl-4 mt-2">
+                  <Label htmlFor="reminder-timing" className="text-sm mb-1 block">Reminder Timing</Label>
+                  <Select
+                    value={settings.reminderTiming}
+                    onValueChange={(value) => handleSettingChange('reminderTiming', value)}
+                  >
+                    <SelectTrigger className="w-full max-w-[180px]">
+                      <SelectValue placeholder="Select timing" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 hour before</SelectItem>
+                      <SelectItem value="12">12 hours before</SelectItem>
+                      <SelectItem value="24">24 hours before</SelectItem>
+                      <SelectItem value="48">48 hours before</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <div className="flex items-center gap-2 mt-3">
+                    <Bell className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">
+                      Reminders will be sent to patients via email and SMS
+                    </span>
+                  </div>
+                </div>
+              )}
               
               <div className="flex justify-between items-center">
                 <div className="space-y-0.5">
-                  <Label htmlFor="ai-assistant">AI Assistant</Label>
+                  <Label htmlFor="ai-assistant" className="text-sm">AI Assistant</Label>
                   <p className="text-xs text-muted-foreground">
                     Use AI to help schedule and manage appointments
                   </p>
@@ -158,13 +186,13 @@ const CalendarIntegration = () => {
                 <Switch
                   id="ai-assistant"
                   checked={settings.aiAssistant}
-                  onCheckedChange={() => handleSettingChange('aiAssistant')}
+                  onCheckedChange={(checked) => handleSettingChange('aiAssistant', checked)}
                 />
               </div>
               
               <div className="flex justify-between items-center">
                 <div className="space-y-0.5">
-                  <Label htmlFor="auto-fill">Auto-Fill Forms</Label>
+                  <Label htmlFor="auto-fill" className="text-sm">Auto-Fill Forms</Label>
                   <p className="text-xs text-muted-foreground">
                     Auto-fill intake forms using patient records
                   </p>
@@ -172,7 +200,7 @@ const CalendarIntegration = () => {
                 <Switch
                   id="auto-fill"
                   checked={settings.autoFillForms}
-                  onCheckedChange={() => handleSettingChange('autoFillForms')}
+                  onCheckedChange={(checked) => handleSettingChange('autoFillForms', checked)}
                 />
               </div>
             </div>
@@ -182,7 +210,7 @@ const CalendarIntegration = () => {
                 <div className="font-medium">View Your Calendar</div>
                 <div className="text-sm text-muted-foreground">Open Cal.com dashboard</div>
               </div>
-              <Button variant="outline" size="sm" className="gap-1">
+              <Button variant="outline" size="sm" className="gap-1 whitespace-nowrap">
                 <LinkIcon className="h-4 w-4" />
                 Open Cal.com
               </Button>
@@ -190,7 +218,7 @@ const CalendarIntegration = () => {
           </div>
         )}
       </CardContent>
-      <CardFooter className={cn("border-t", !isConnected && "flex justify-end")}>
+      <CardFooter className={cn("border-t p-4", !isConnected && "flex justify-end")}>
         {!isConnected ? (
           <Button type="submit" onClick={handleConnect} disabled={isLoading}>
             {isLoading ? 'Connecting...' : 'Connect with Cal.com'}

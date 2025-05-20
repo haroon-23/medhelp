@@ -36,13 +36,15 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
   };
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden text-ellipsis">
       <RoleBasedSidebar />
       
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="h-16 border-b flex items-center justify-between px-6 bg-white shadow-sm animate-fade-in">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-semibold truncate max-w-[200px]">{title || 'MediSecure EMR'}</h1>
+            <h1 className="text-xl font-semibold truncate max-w-[200px] md:max-w-[300px]">
+              {title || 'MediSecure EMR'}
+            </h1>
           </div>
           
           <div className="flex items-center gap-2 md:gap-4">
@@ -62,14 +64,16 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
 
             <Button 
               variant="outline"
-              className="flex items-center gap-1 border-sidebar-foreground/20 text-sidebar-foreground"
+              className="flex items-center gap-1 border-sidebar-foreground/20 text-sidebar-foreground whitespace-nowrap"
               onClick={handleSignOut}
             >
               <LogOut className="h-4 w-4" />
               <span className="text-xs sm:text-sm">Sign Out</span>
             </Button>
             
-            <span className="hipaa-badge text-xs whitespace-nowrap">HIPAA Compliant</span>
+            <span className="hipaa-badge text-xs whitespace-nowrap bg-blue-50 px-2 py-1 rounded-full border border-blue-200 text-blue-600 text-[10px] sm:text-xs">
+              HIPAA Compliant
+            </span>
           </div>
         </header>
         
