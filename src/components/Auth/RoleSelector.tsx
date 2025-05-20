@@ -15,7 +15,7 @@ const RoleSelector = () => {
 
   return (
     <div className="container max-w-6xl mx-auto px-4 py-6">
-      <div className="text-center mb-10">
+      <div className="text-center mb-10 animate-fade-in">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-2">
           Select Your Role
         </h2>
@@ -63,11 +63,15 @@ const RoleSelector = () => {
             role: "admin"
           }
         ].map((role, index) => (
-          <Card key={index} className="border-2 rounded-lg hover:shadow-lg transition-shadow duration-300 mb-4">
+          <Card 
+            key={index} 
+            className="border-2 rounded-lg hover:shadow-lg transition-all duration-300 mb-4 hover:scale-[1.01] animate-fade-in"
+            style={{ animationDelay: `${index * 150}ms` }}
+          >
             <div className="flex flex-col md:flex-row">
-              <CardHeader className="md:w-1/3 bg-slate-50 p-6 flex items-center">
-                <div>
-                  <div className={`p-4 h-24 w-24 ${role.iconBg} rounded-lg flex items-center justify-center mb-3`}>
+              <CardHeader className="md:w-1/3 bg-slate-50 p-6 flex flex-col justify-center items-center">
+                <div className="text-center">
+                  <div className={`p-4 h-24 w-24 ${role.iconBg} rounded-lg flex items-center justify-center mb-3 mx-auto transition-all duration-300 hover:scale-105`}>
                     {role.icon}
                   </div>
                   <CardTitle className="text-2xl font-bold mb-2">{role.title}</CardTitle>
@@ -80,7 +84,11 @@ const RoleSelector = () => {
               <CardContent className="py-6 px-8 md:w-2/3 flex flex-col justify-between">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   {role.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
+                    <div 
+                      key={idx} 
+                      className="flex items-center gap-3 transition-all duration-300 hover:translate-x-1"
+                      style={{ animationDelay: `${(index * 150) + (idx * 100)}ms` }}
+                    >
                       <span className="bg-green-100 p-2 rounded-full flex-shrink-0">
                         {feature.icon}
                       </span>
@@ -91,7 +99,7 @@ const RoleSelector = () => {
                 
                 <div className="w-full">
                   <Button 
-                    className="w-full py-6 font-semibold text-base" 
+                    className="w-full py-6 font-semibold text-base transition-all duration-300 hover:bg-primary/90 hover:scale-[1.02]" 
                     onClick={() => handleRoleSelect(role.role)}
                   >
                     Log in as {role.title}

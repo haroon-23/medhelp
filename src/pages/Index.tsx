@@ -17,19 +17,19 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-blue-50">
-      <header className="flex h-16 items-center px-6 lg:px-8 bg-white border-b shadow-sm">
+      <header className="flex h-16 items-center px-6 lg:px-8 bg-white border-b shadow-sm animate-fade-in">
         <div className="flex items-center gap-2 font-semibold">
-          <Shield className="h-6 w-6 text-primary" />
-          <span>MediSecure EMR</span>
+          <Shield className="h-6 w-6 text-primary animate-pulse" />
+          <span className="transition-all duration-300 hover:text-primary">MediSecure EMR</span>
         </div>
         <nav className="ml-auto flex gap-6">
-          <a href="#features" className="text-sm font-medium hover:underline underline-offset-4">
+          <a href="#features" className="text-sm font-medium hover:underline underline-offset-4 transition-all duration-300 hover:text-primary">
             Features
           </a>
-          <a href="#security" className="text-sm font-medium hover:underline underline-offset-4">
+          <a href="#security" className="text-sm font-medium hover:underline underline-offset-4 transition-all duration-300 hover:text-primary">
             Security
           </a>
-          <a href="#compliance" className="text-sm font-medium hover:underline underline-offset-4">
+          <a href="#compliance" className="text-sm font-medium hover:underline underline-offset-4 transition-all duration-300 hover:text-primary">
             Compliance
           </a>
         </nav>
@@ -38,7 +38,7 @@ const Index = () => {
       <main className="flex-1">
         <section className="w-full py-16 lg:py-20">
           <div className="container px-4 mx-auto flex flex-col md:flex-row items-center gap-10 lg:gap-16">
-            <div className="flex flex-col space-y-5 md:w-1/2">
+            <div className="flex flex-col space-y-5 md:w-1/2 animate-fade-in">
               <div className="inline-block mb-2">
                 <span className="hipaa-badge">HIPAA Compliant</span>
               </div>
@@ -51,7 +51,7 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="md:w-1/2 w-full max-w-md mx-auto">
+            <div className="md:w-1/2 w-full max-w-md mx-auto animate-fade-in" style={{ animationDelay: "150ms" }}>
               <LoginForm />
             </div>
           </div>
@@ -59,7 +59,7 @@ const Index = () => {
         
         <section id="features" className="w-full py-16 bg-white border-y">
           <div className="container px-4 mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12 animate-fade-in">
               <div className="space-y-2">
                 <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">
                   Key Features
@@ -100,7 +100,11 @@ const Index = () => {
                   description: "Comprehensive reporting tools to track performance and identify improvement areas.",
                 },
               ].map((feature, index) => (
-                <div key={index} className="flex flex-col items-center text-center p-6 space-y-4 border-2 rounded-lg bg-background shadow-sm">
+                <div 
+                  key={index} 
+                  className="flex flex-col items-center text-center p-6 space-y-4 border-2 rounded-lg bg-background shadow-sm animate-fade-in transition-all duration-300 hover:shadow-md hover:scale-[1.02]"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
                   <div className="p-3 rounded-full bg-primary/10">
                     <Shield className="h-6 w-6 text-primary" />
                   </div>
@@ -114,7 +118,7 @@ const Index = () => {
         
         <section id="security" className="w-full py-16 bg-blue-50">
           <div className="container px-4 mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center animate-fade-in">
               <div className="space-y-2">
                 <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">
                   Security First
@@ -132,7 +136,7 @@ const Index = () => {
         
         <section id="compliance" className="w-full py-16 bg-white border-t">
           <div className="container px-4 mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center animate-fade-in">
               <div className="space-y-2">
                 <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">
                   HIPAA Compliant
@@ -149,15 +153,15 @@ const Index = () => {
         </section>
       </main>
       
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full border-t items-center px-6 bg-white">
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full border-t items-center px-6 bg-white animate-fade-in">
         <p className="text-xs text-muted-foreground">
           © 2025 MediSecure EMR. All rights reserved.
         </p>
         <nav className="sm:ml-auto flex gap-6">
-          <a href="#" className="text-xs hover:underline underline-offset-4">
+          <a href="#" className="text-xs hover:underline underline-offset-4 transition-all duration-300 hover:text-primary">
             Terms of Service
           </a>
-          <a href="#" className="text-xs hover:underline underline-offset-4">
+          <a href="#" className="text-xs hover:underline underline-offset-4 transition-all duration-300 hover:text-primary">
             Privacy
           </a>
         </nav>
