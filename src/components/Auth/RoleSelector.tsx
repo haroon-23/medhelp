@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { User, FileText, Shield, Calendar } from 'lucide-react';
+import { User, Shield, Calendar, LogOut } from 'lucide-react';
 
 const RoleSelector = () => {
   const navigate = useNavigate();
@@ -14,13 +14,13 @@ const RoleSelector = () => {
   };
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-8">
-      <div className="text-center mb-8 animate-fade-in">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-3">
+    <div className="container max-w-5xl mx-auto px-4 py-6">
+      <div className="text-center mb-6 animate-fade-in">
+        <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-2">
           Select Your Role
         </h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          Choose the role that best matches your responsibilities to access the appropriate dashboard and features
+        <p className="text-muted-foreground max-w-2xl mx-auto text-sm">
+          Choose the role that best matches your responsibilities
         </p>
       </div>
 
@@ -28,25 +28,23 @@ const RoleSelector = () => {
         {[
           {
             title: "Doctor",
-            icon: <User className="h-12 w-12 text-blue-600" />,
+            icon: <User className="h-10 w-10 text-blue-600" />,
             iconBg: "bg-blue-100",
-            description: "Access patient records, appointments, and voice bot analytics",
+            description: "Access patient records and appointments",
             features: [
-              { icon: <User className="h-5 w-5 text-green-600" />, text: "Full patient management" },
-              { icon: <Calendar className="h-5 w-5 text-green-600" />, text: "Voice bot analytics" },
-              { icon: <FileText className="h-5 w-5 text-green-600" />, text: "Medical record access" }
+              { icon: <User className="h-4 w-4 text-green-600" />, text: "Patient management" },
+              { icon: <Calendar className="h-4 w-4 text-green-600" />, text: "Voice analytics" }
             ],
             role: "doctor"
           },
           {
             title: "Administrator",
-            icon: <Shield className="h-12 w-12 text-purple-600" />,
+            icon: <Shield className="h-10 w-10 text-purple-600" />,
             iconBg: "bg-purple-100",
-            description: "Complete system access with HIPAA compliance and reporting",
+            description: "Complete system access with compliance tools",
             features: [
-              { icon: <User className="h-5 w-5 text-green-600" />, text: "Full system access" },
-              { icon: <Shield className="h-5 w-5 text-green-600" />, text: "HIPAA compliance tools" },
-              { icon: <FileText className="h-5 w-5 text-green-600" />, text: "Advanced reporting" }
+              { icon: <User className="h-4 w-4 text-green-600" />, text: "Full access" },
+              { icon: <Shield className="h-4 w-4 text-green-600" />, text: "HIPAA tools" }
             ],
             role: "admin"
           }
@@ -57,44 +55,53 @@ const RoleSelector = () => {
             style={{ animationDelay: `${index * 150}ms` }}
           >
             <div className="flex flex-col md:flex-row">
-              <div className="p-6 bg-slate-50 flex items-center justify-center md:w-[200px] border-b md:border-b-0 md:border-r">
-                <div className={`p-6 ${role.iconBg} rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105`}>
+              <div className="p-4 bg-slate-50 flex items-center justify-center md:w-[150px] border-b md:border-b-0 md:border-r">
+                <div className={`p-4 ${role.iconBg} rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105`}>
                   {role.icon}
                 </div>
               </div>
               
               <div className="flex-1 p-0">
                 <div className="flex flex-col h-full">
-                  <div className="p-6 pb-3">
-                    <h3 className="text-2xl font-bold mb-2">{role.title}</h3>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="p-4 pb-2">
+                    <h3 className="text-xl font-bold mb-1">{role.title}</h3>
+                    <p className="text-xs text-muted-foreground line-clamp-2">
                       {role.description}
                     </p>
                   </div>
                   
-                  <div className="px-6 pb-4 flex-1">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="px-4 pb-3 flex-1">
+                    <div className="grid grid-cols-2 gap-2">
                       {role.features.map((feature, idx) => (
                         <div 
                           key={idx} 
-                          className="flex items-center gap-3 transition-all duration-300 hover:translate-x-1"
-                          style={{ animationDelay: `${(index * 150) + (idx * 100)}ms` }}
+                          className="flex items-center gap-2 transition-all duration-300 hover:translate-x-1"
                         >
-                          <span className="bg-green-100 p-2 rounded-full flex-shrink-0">
+                          <span className="bg-green-100 p-1.5 rounded-full flex-shrink-0">
                             {feature.icon}
                           </span>
-                          <span className="text-sm">{feature.text}</span>
+                          <span className="text-xs">{feature.text}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                   
-                  <div className="mt-auto p-6 pt-3 border-t">
+                  <div className="flex flex-col gap-2 p-4 pt-2 border-t">
                     <Button 
-                      className="w-full py-5 font-semibold text-base transition-all duration-300 hover:bg-primary/90" 
+                      className="w-full py-2 text-sm font-medium transition-all duration-300 hover:bg-primary/90" 
                       onClick={() => handleRoleSelect(role.role)}
                     >
                       Log in as {role.title}
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center justify-center gap-1 text-xs"
+                      onClick={() => navigate('/')}
+                    >
+                      <LogOut className="h-3 w-3" />
+                      Back
                     </Button>
                   </div>
                 </div>

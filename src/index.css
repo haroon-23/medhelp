@@ -93,6 +93,9 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -123,7 +126,7 @@
 
 @layer components {
   .hipaa-badge {
-    @apply inline-flex items-center rounded-full border border-green-500 bg-green-50 px-2.5 py-0.5 text-xs font-semibold text-green-700 transition-all duration-300 hover:bg-green-100;
+    @apply inline-flex items-center rounded-full border border-green-500 bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700 transition-all duration-300 hover:bg-green-100;
   }
   
   .patient-card {
@@ -131,7 +134,7 @@
   }
   
   .stats-card {
-    @apply flex flex-col p-6 bg-white rounded-lg border border-border shadow-sm transition-all duration-300 hover:shadow-md hover:translate-y-[-2px];
+    @apply flex flex-col p-4 sm:p-6 bg-white rounded-lg border border-border shadow-sm transition-all duration-300 hover:shadow-md hover:translate-y-[-2px];
   }
   
   .form-group {
@@ -149,6 +152,19 @@
   
   .text-truncate-3 {
     @apply line-clamp-3;
+  }
+  
+  /* Text containers */
+  .text-container {
+    @apply break-words overflow-hidden;
+  }
+  
+  .text-container-sm {
+    @apply break-words overflow-hidden text-sm;
+  }
+  
+  .text-container-xs {
+    @apply break-words overflow-hidden text-xs;
   }
   
   /* Link animation */
@@ -211,7 +227,7 @@
 
   /* Sidebar and nav item styling */
   .nav-item {
-    @apply flex items-center gap-3 rounded-md px-3 py-2 hover:bg-sidebar-accent transition-colors;
+    @apply flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-sidebar-accent transition-colors;
   }
 
   .nav-item-active {
@@ -220,7 +236,29 @@
 
   /* Sign-out button styling */
   .sign-out-button {
-    @apply w-full border-sidebar-foreground/20 text-sidebar-foreground flex items-center justify-center gap-2 py-2;
+    @apply w-full border-sidebar-foreground/20 text-sidebar-foreground flex items-center justify-center gap-2 py-2 text-sm;
+  }
+  
+  /* Card content spacing */
+  .card-content-compact {
+    @apply p-3 sm:p-4 space-y-2;
+  }
+  
+  .card-content-normal {
+    @apply p-4 sm:p-6 space-y-3;
+  }
+  
+  /* Icon containers */
+  .icon-container-sm {
+    @apply p-1.5 rounded-md flex items-center justify-center;
+  }
+  
+  .icon-container {
+    @apply p-2 rounded-md flex items-center justify-center;
+  }
+  
+  .icon-container-lg {
+    @apply p-3 rounded-lg flex items-center justify-center;
   }
 }
 
@@ -274,6 +312,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 /* Fix for long words breaking layouts */
@@ -292,4 +332,32 @@
   .sidebar-responsive {
     @apply w-full max-w-sm;
   }
+  
+  /* Smaller text on mobile */
+  .text-responsive {
+    @apply text-sm;
+  }
+  
+  .text-responsive-title {
+    @apply text-lg;
+  }
+}
+
+/* Font size utilities */
+.text-xxs {
+  font-size: 0.65rem;
+  line-height: 1rem;
+}
+
+/* Spacing utilities for text containers */
+.text-spacing-tight {
+  letter-spacing: -0.01em;
+}
+
+.text-spacing-normal {
+  letter-spacing: 0;
+}
+
+.text-spacing-wide {
+  letter-spacing: 0.01em;
 }

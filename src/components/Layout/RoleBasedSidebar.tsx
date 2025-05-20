@@ -85,25 +85,25 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
 
   return (
     <div className={cn("w-64 h-screen bg-sidebar flex-shrink-0 border-r border-sidebar-border flex flex-col", className)}>
-      <div className="p-6">
-        <h2 className="text-xl font-bold text-sidebar-foreground flex items-center">
-          <Shield className="mr-2 h-6 w-6" />
-          MediSecure EMR
+      <div className="p-4">
+        <h2 className="text-lg font-bold text-sidebar-foreground flex items-center">
+          <Shield className="mr-2 h-5 w-5" />
+          <span className="truncate">MediSecure EMR</span>
         </h2>
       </div>
       
-      <nav className="px-3 mt-6 flex-1 overflow-y-auto">
+      <nav className="px-3 mt-2 flex-1 overflow-y-auto">
         <ul className="space-y-1">
           {menuItems.map((item) => (
             <li key={item.path}>
               <NavLink 
                 to={item.path}
                 className={({ isActive }) => cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent transition-colors",
+                  "flex items-center gap-2 rounded-md px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent transition-colors text-sm",
                   isActive && "bg-sidebar-accent font-medium"
                 )}
               >
-                <item.icon className="h-5 w-5 flex-shrink-0" />
+                <item.icon className="h-4 w-4 flex-shrink-0" />
                 <span className="truncate">{item.label}</span>
               </NavLink>
             </li>
@@ -111,8 +111,8 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
         </ul>
       </nav>
       
-      <div className="p-4 border-t border-sidebar-border">
-        <div className="flex items-center gap-3 p-3 mb-3">
+      <div className="p-3 border-t border-sidebar-border">
+        <div className="flex items-center gap-3 p-2 mb-2">
           <div className="w-8 h-8 rounded-full bg-sidebar-accent flex items-center justify-center flex-shrink-0">
             <User className="h-4 w-4 text-sidebar-foreground" />
           </div>
@@ -123,7 +123,7 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
         </div>
         <Button 
           variant="outline" 
-          className="w-full border-sidebar-foreground/20 text-sidebar-foreground flex items-center gap-2 py-2"
+          className="w-full border-sidebar-foreground/20 text-sidebar-foreground flex items-center justify-center gap-2 py-1 text-sm"
           onClick={handleSignOut}
         >
           <LogOut className="h-4 w-4" />
