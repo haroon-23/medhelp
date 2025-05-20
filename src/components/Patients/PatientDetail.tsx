@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Calendar, FileText, Pills, User, UserPlus, Phone, Mail, FileSearch } from 'lucide-react';
+import { Calendar, FileText, Pill, User, UserPlus, Phone, Mail, FileSearch } from 'lucide-react';
 import { PatientData } from './PatientCard';
 
 interface PatientDetailProps {
@@ -242,7 +241,7 @@ const PatientDetail = ({ patient, onClose }: PatientDetailProps) => {
             Export Data
           </Button>
           <Button variant="outline" size="sm">
-            <Pills className="h-4 w-4 mr-1" />
+            <Pill className="h-4 w-4 mr-1" />
             Prescriptions
           </Button>
         </div>
