@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { User, Calendar, FileText, Shield, Users } from 'lucide-react';
+import { User, FileText, Shield, Calendar } from 'lucide-react';
 
 const RoleSelector = () => {
   const navigate = useNavigate();
@@ -39,24 +39,12 @@ const RoleSelector = () => {
             role: "doctor"
           },
           {
-            title: "Staff",
-            icon: <Users className="h-12 w-12 text-indigo-600" />,
-            iconBg: "bg-indigo-100",
-            description: "Manage appointments, billing, and basic patient information",
-            features: [
-              { icon: <Calendar className="h-5 w-5 text-green-600" />, text: "Appointment scheduling" },
-              { icon: <FileText className="h-5 w-5 text-green-600" />, text: "Billing management" },
-              { icon: <User className="h-5 w-5 text-green-600" />, text: "Basic patient info" }
-            ],
-            role: "staff"
-          },
-          {
             title: "Administrator",
             icon: <Shield className="h-12 w-12 text-purple-600" />,
             iconBg: "bg-purple-100",
             description: "Complete system access with HIPAA compliance and reporting",
             features: [
-              { icon: <Users className="h-5 w-5 text-green-600" />, text: "Full system access" },
+              { icon: <User className="h-5 w-5 text-green-600" />, text: "Full system access" },
               { icon: <Shield className="h-5 w-5 text-green-600" />, text: "HIPAA compliance tools" },
               { icon: <FileText className="h-5 w-5 text-green-600" />, text: "Advanced reporting" }
             ],
@@ -78,10 +66,10 @@ const RoleSelector = () => {
               <div className="flex-1 p-0">
                 <div className="flex flex-col h-full">
                   <div className="p-6 pb-3">
-                    <CardTitle className="text-2xl font-bold mb-2">{role.title}</CardTitle>
-                    <CardDescription className="text-sm line-clamp-2">
+                    <h3 className="text-2xl font-bold mb-2">{role.title}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
                       {role.description}
-                    </CardDescription>
+                    </p>
                   </div>
                   
                   <div className="px-6 pb-4 flex-1">

@@ -45,7 +45,7 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
               <Input
                 type="search"
                 placeholder="Search..."
-                className="pl-8 w-[200px] rounded-full bg-secondary"
+                className="pl-8 w-[200px] md:w-[250px] rounded-full bg-secondary"
               />
             </div>
             

@@ -30,7 +30,7 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
     }
   }, []);
 
-  // Define menu items based on user role
+  // Define menu items based on user role - removed staff role
   const getMenuItems = () => {
     const commonItems = [
       { icon: Home, label: 'Dashboard', path: '/dashboard' },
@@ -42,12 +42,6 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
       { icon: Users, label: 'Patients', path: '/patients' },
       { icon: FileText, label: 'Medical Records', path: '/records' },
       { icon: Headphones, label: 'Voice Bot Analytics', path: '/voice-analytics' },
-    ];
-
-    const staffItems = [
-      ...commonItems,
-      { icon: Users, label: 'Patients', path: '/patients' },
-      { icon: Wallet, label: 'Billing', path: '/billing' },
     ];
 
     const adminItems = [
@@ -63,8 +57,6 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
     switch (userRole) {
       case 'doctor':
         return doctorItems;
-      case 'staff':
-        return staffItems;
       case 'admin':
       default:
         return adminItems;
@@ -77,8 +69,6 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
     switch (userRole) {
       case 'doctor':
         return 'Dr. Sarah Johnson';
-      case 'staff':
-        return 'Lisa Rodriguez';
       case 'admin':
       default:
         return 'Administrator';

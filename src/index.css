@@ -92,14 +92,27 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-semibold tracking-tight leading-tight;
+  }
+  
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl;
   }
   
   p {
-    @apply leading-relaxed;
+    @apply leading-relaxed mb-2;
   }
   
   /* Transitions for all interactive elements */
@@ -127,7 +140,7 @@
   
   /* Text truncation classes */
   .text-truncate {
-    @apply truncate;
+    @apply truncate max-w-full;
   }
   
   .text-truncate-2 {
@@ -159,6 +172,36 @@
   /* Button hover effects */
   .hover-button {
     @apply transition-all duration-300 hover:shadow-md hover:scale-[1.02];
+  }
+  
+  /* Text alignment helpers */
+  .text-align-start {
+    @apply text-start;
+  }
+  
+  .text-align-center {
+    @apply text-center;
+  }
+  
+  .text-align-end {
+    @apply text-end;
+  }
+  
+  /* Flex alignment helpers */
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+  
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+  
+  .flex-start {
+    @apply flex items-center justify-start;
+  }
+  
+  .flex-end {
+    @apply flex items-center justify-end;
   }
 }
 
@@ -217,4 +260,5 @@
 .break-word {
   word-wrap: break-word;
   overflow-wrap: break-word;
+  hyphens: auto;
 }
