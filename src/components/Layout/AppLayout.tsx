@@ -34,9 +34,9 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
       <RoleBasedSidebar />
       
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 border-b flex items-center justify-between px-6">
+        <header className="h-16 border-b flex items-center justify-between px-6 bg-white shadow-sm animate-fade-in">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-semibold">{title || 'MediSecure EMR'}</h1>
+            <h1 className="text-xl font-semibold truncate">{title || 'MediSecure EMR'}</h1>
           </div>
           
           <div className="flex items-center gap-4">
@@ -49,7 +49,7 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
               />
             </div>
             
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" className="transition-all duration-300 hover:bg-secondary">
               <Bell className="h-4 w-4" />
               <span className="sr-only">Notifications</span>
             </Button>
@@ -59,7 +59,9 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
         </header>
         
         <main className="flex-1 overflow-auto p-6 bg-muted/30">
-          {children}
+          <div className="animate-fade-in">
+            {children}
+          </div>
         </main>
       </div>
       

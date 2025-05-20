@@ -14,9 +14,9 @@ const RoleSelector = () => {
   };
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-6">
-      <div className="text-center mb-10 animate-fade-in">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-2">
+    <div className="container max-w-6xl mx-auto px-4 py-8">
+      <div className="text-center mb-8 animate-fade-in">
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-3">
           Select Your Role
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -24,11 +24,11 @@ const RoleSelector = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-8">
+      <div className="flex flex-col space-y-6">
         {[
           {
             title: "Doctor",
-            icon: <User className="h-14 w-14 text-blue-600" />,
+            icon: <User className="h-12 w-12 text-blue-600" />,
             iconBg: "bg-blue-100",
             description: "Access patient records, appointments, and voice bot analytics",
             features: [
@@ -40,7 +40,7 @@ const RoleSelector = () => {
           },
           {
             title: "Staff",
-            icon: <Users className="h-14 w-14 text-indigo-600" />,
+            icon: <Users className="h-12 w-12 text-indigo-600" />,
             iconBg: "bg-indigo-100",
             description: "Manage appointments, billing, and basic patient information",
             features: [
@@ -52,7 +52,7 @@ const RoleSelector = () => {
           },
           {
             title: "Administrator",
-            icon: <Shield className="h-14 w-14 text-purple-600" />,
+            icon: <Shield className="h-12 w-12 text-purple-600" />,
             iconBg: "bg-purple-100",
             description: "Complete system access with HIPAA compliance and reporting",
             features: [
@@ -65,47 +65,52 @@ const RoleSelector = () => {
         ].map((role, index) => (
           <Card 
             key={index} 
-            className="border-2 rounded-lg hover:shadow-lg transition-all duration-300 mb-4 hover:scale-[1.01] animate-fade-in"
+            className="border-2 rounded-lg hover:shadow-lg transition-all duration-300 animate-fade-in"
             style={{ animationDelay: `${index * 150}ms` }}
           >
-            <div className="flex flex-col md:flex-row">
-              <CardHeader className="md:w-1/3 bg-slate-50 p-6 flex flex-col justify-center items-center">
-                <div className="text-center">
-                  <div className={`p-4 h-24 w-24 ${role.iconBg} rounded-lg flex items-center justify-center mb-3 mx-auto transition-all duration-300 hover:scale-105`}>
-                    {role.icon}
-                  </div>
-                  <CardTitle className="text-2xl font-bold mb-2">{role.title}</CardTitle>
-                  <CardDescription className="text-sm">
-                    {role.description}
-                  </CardDescription>
+            <div className="flex flex-row">
+              <div className="p-6 bg-slate-50 flex items-center justify-center w-[200px] border-r">
+                <div className={`p-6 ${role.iconBg} rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105`}>
+                  {role.icon}
                 </div>
-              </CardHeader>
+              </div>
               
-              <CardContent className="py-6 px-8 md:w-2/3 flex flex-col justify-between">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  {role.features.map((feature, idx) => (
-                    <div 
-                      key={idx} 
-                      className="flex items-center gap-3 transition-all duration-300 hover:translate-x-1"
-                      style={{ animationDelay: `${(index * 150) + (idx * 100)}ms` }}
-                    >
-                      <span className="bg-green-100 p-2 rounded-full flex-shrink-0">
-                        {feature.icon}
-                      </span>
-                      <span className="text-base">{feature.text}</span>
+              <div className="flex-1 p-0">
+                <div className="flex flex-col h-full">
+                  <div className="p-6 pb-3">
+                    <CardTitle className="text-2xl font-bold mb-2">{role.title}</CardTitle>
+                    <CardDescription className="text-sm line-clamp-2">
+                      {role.description}
+                    </CardDescription>
+                  </div>
+                  
+                  <div className="px-6 pb-4 flex-1">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {role.features.map((feature, idx) => (
+                        <div 
+                          key={idx} 
+                          className="flex items-center gap-3 transition-all duration-300 hover:translate-x-1"
+                          style={{ animationDelay: `${(index * 150) + (idx * 100)}ms` }}
+                        >
+                          <span className="bg-green-100 p-2 rounded-full flex-shrink-0">
+                            {feature.icon}
+                          </span>
+                          <span className="text-sm">{feature.text}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                  
+                  <div className="mt-auto p-6 pt-3 border-t">
+                    <Button 
+                      className="w-full py-5 font-semibold text-base transition-all duration-300 hover:bg-primary/90" 
+                      onClick={() => handleRoleSelect(role.role)}
+                    >
+                      Log in as {role.title}
+                    </Button>
+                  </div>
                 </div>
-                
-                <div className="w-full">
-                  <Button 
-                    className="w-full py-6 font-semibold text-base transition-all duration-300 hover:bg-primary/90 hover:scale-[1.02]" 
-                    onClick={() => handleRoleSelect(role.role)}
-                  >
-                    Log in as {role.title}
-                  </Button>
-                </div>
-              </CardContent>
+              </div>
             </div>
           </Card>
         ))}
