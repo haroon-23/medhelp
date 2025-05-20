@@ -20,9 +20,10 @@ export interface PatientData {
 interface PatientCardProps {
   patient: PatientData;
   className?: string;
+  onViewDetails?: (patient: PatientData) => void;
 }
 
-const PatientCard = ({ patient, className }: PatientCardProps) => {
+const PatientCard = ({ patient, className, onViewDetails }: PatientCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Active":
@@ -89,9 +90,13 @@ const PatientCard = ({ patient, className }: PatientCardProps) => {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between pt-2">
-        <Button variant="ghost" size="sm">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={onViewDetails ? () => onViewDetails(patient) : undefined}
+        >
           <FileCheck className="h-4 w-4 mr-1" />
-          View Records
+          View Details
         </Button>
         <Button variant="outline" size="sm">
           <Calendar className="h-4 w-4 mr-1" />

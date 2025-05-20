@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Search, FileText, Calendar, Stethoscope, Pill, Plus, Filter, Check, Clock } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Search, FileText, Calendar, Stethoscope, Pill, Plus, Filter, Check, Clock, ArrowUpDown, FileSearch } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface MedicalRecord {
@@ -79,6 +80,9 @@ const demoRecords: MedicalRecord[] = [
 const MedicalRecords = () => {
   const [records, setRecords] = useState<MedicalRecord[]>(demoRecords);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
+  const [sortOrder, setSortOrder] = useState('newest');
+  const [showNewRecordDialog, setShowNewRecordDialog] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +118,7 @@ const MedicalRecords = () => {
       case 'Lab Results':
         return <Stethoscope className="h-4 w-4 text-purple-600" />;
       case 'Radiology':
-        return <FileText className="h-4 w-4 text-indigo-600" />;
+        return <FileSearch className="h-4 w-4 text-indigo-600" />;
       case 'Prescription':
         return <Pill className="h-4 w-4 text-green-600" />;
       case 'Discharge Summary':
@@ -122,6 +126,63 @@ const MedicalRecords = () => {
       default:
         return <FileText className="h-4 w-4 text-gray-600" />;
     }
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    
+    if (value === 'all') {
+      setRecords(demoRecords);
+    } else {
+      let recordType;
+      switch (value) {
+        case 'clinical':
+          recordType = 'Clinical Notes';
+          break;
+        case 'labs':
+          recordType = 'Lab Results';
+          break;
+        case 'imaging':
+          recordType = 'Radiology';
+          break;
+        case 'prescriptions':
+          recordType = 'Prescription';
+          break;
+        default:
+          recordType = '';
+      }
+      
+      const filteredRecords = demoRecords.filter(
+        record => record.recordType === recordType
+      );
+      setRecords(filteredRecords);
+    }
+  };
+
+  const handleSort = (order: string) => {
+    setSortOrder(order);
+    const sortedRecords = [...records];
+    
+    switch (order) {
+      case 'newest':
+        sortedRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        break;
+      case 'oldest':
+        sortedRecords.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        break;
+      case 'patient-az':
+        sortedRecords.sort((a, b) => a.patientName.localeCompare(b.patientName));
+        break;
+      case 'patient-za':
+        sortedRecords.sort((a, b) => b.patientName.localeCompare(a.patientName));
+        break;
+    }
+    
+    setRecords(sortedRecords);
+  };
+
+  const handleAddNewRecord = () => {
+    setShowNewRecordDialog(true);
   };
 
   return (
@@ -154,7 +215,7 @@ const MedicalRecords = () => {
                     <Filter className="h-4 w-4 mr-2" />
                     Filter
                   </Button>
-                  <Button>
+                  <Button onClick={handleAddNewRecord}>
                     <Plus className="h-4 w-4 mr-2" />
                     New Record
                   </Button>
@@ -163,7 +224,7 @@ const MedicalRecords = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="all">
+            <Tabs defaultValue="all" value={activeTab} onValueChange={handleTabChange}>
               <div className="flex justify-between items-center">
                 <TabsList>
                   <TabsTrigger value="all">All Records</TabsTrigger>
@@ -172,7 +233,7 @@ const MedicalRecords = () => {
                   <TabsTrigger value="imaging">Imaging</TabsTrigger>
                   <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
                 </TabsList>
-                <Select defaultValue="newest">
+                <Select value={sortOrder} onValueChange={handleSort}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Sort By" />
                   </SelectTrigger>
@@ -192,16 +253,25 @@ const MedicalRecords = () => {
                       <thead className="[&_tr]:border-b">
                         <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                           <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                            Record Type
+                            <div className="flex items-center space-x-1">
+                              <span>Record Type</span>
+                              <ArrowUpDown className="h-3 w-3" />
+                            </div>
                           </th>
                           <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                            Patient
+                            <div className="flex items-center space-x-1">
+                              <span>Patient</span>
+                              <ArrowUpDown className="h-3 w-3" />
+                            </div>
                           </th>
                           <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
                             Patient ID
                           </th>
                           <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                            Date
+                            <div className="flex items-center space-x-1">
+                              <span>Date</span>
+                              <ArrowUpDown className="h-3 w-3" />
+                            </div>
                           </th>
                           <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
                             Provider
@@ -237,8 +307,8 @@ const MedicalRecords = () => {
                             </td>
                             <td className="p-4 align-middle">
                               <div className="flex space-x-2">
-                                <Button variant="ghost" size="sm">View</Button>
-                                <Button variant="ghost" size="sm">Edit</Button>
+                                <Button variant="ghost" size="sm" onClick={() => toast.info(`Viewing record: ${record.id}`)}>View</Button>
+                                <Button variant="ghost" size="sm" onClick={() => toast.info(`Editing record: ${record.id}`)}>Edit</Button>
                               </div>
                             </td>
                           </tr>
@@ -251,23 +321,132 @@ const MedicalRecords = () => {
 
               {/* Other tab contents would follow the same pattern */}
               <TabsContent value="clinical" className="mt-4">
-                <div className="p-8 text-center">
-                  <p className="text-muted-foreground">Filter applied: Clinical Notes</p>
+                <div className="rounded-md border">
+                  <div className="relative w-full overflow-auto">
+                    <table className="w-full caption-bottom text-sm">
+                      <thead className="[&_tr]:border-b">
+                        <tr className="border-b">
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Patient</th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date</th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Provider</th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
+                          <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {records.map((record) => (
+                          <tr key={record.id} className="border-b">
+                            <td className="p-4 align-middle font-medium">{record.patientName}</td>
+                            <td className="p-4 align-middle">{record.date}</td>
+                            <td className="p-4 align-middle">{record.provider}</td>
+                            <td className="p-4 align-middle">{getStatusBadge(record.status)}</td>
+                            <td className="p-4 align-middle">
+                              <div className="flex space-x-2">
+                                <Button variant="ghost" size="sm">View</Button>
+                                <Button variant="ghost" size="sm">Edit</Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </TabsContent>
+              
               <TabsContent value="labs" className="mt-4">
-                <div className="p-8 text-center">
-                  <p className="text-muted-foreground">Filter applied: Lab Results</p>
+                <div className="relative w-full overflow-auto rounded-md border">
+                  <table className="w-full caption-bottom text-sm">
+                    <thead className="[&_tr]:border-b">
+                      <tr className="border-b">
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Patient</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Provider</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {records.map((record) => (
+                        <tr key={record.id} className="border-b">
+                          <td className="p-4 align-middle font-medium">{record.patientName}</td>
+                          <td className="p-4 align-middle">{record.date}</td>
+                          <td className="p-4 align-middle">{record.provider}</td>
+                          <td className="p-4 align-middle">{getStatusBadge(record.status)}</td>
+                          <td className="p-4 align-middle">
+                            <div className="flex space-x-2">
+                              <Button variant="ghost" size="sm">View</Button>
+                              <Button variant="ghost" size="sm">Edit</Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </TabsContent>
+              
               <TabsContent value="imaging" className="mt-4">
-                <div className="p-8 text-center">
-                  <p className="text-muted-foreground">Filter applied: Imaging</p>
+                <div className="relative w-full overflow-auto rounded-md border">
+                  <table className="w-full caption-bottom text-sm">
+                    <thead className="[&_tr]:border-b">
+                      <tr className="border-b">
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Patient</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Provider</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {records.map((record) => (
+                        <tr key={record.id} className="border-b">
+                          <td className="p-4 align-middle font-medium">{record.patientName}</td>
+                          <td className="p-4 align-middle">{record.date}</td>
+                          <td className="p-4 align-middle">{record.provider}</td>
+                          <td className="p-4 align-middle">{getStatusBadge(record.status)}</td>
+                          <td className="p-4 align-middle">
+                            <div className="flex space-x-2">
+                              <Button variant="ghost" size="sm">View</Button>
+                              <Button variant="ghost" size="sm">Edit</Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </TabsContent>
+              
               <TabsContent value="prescriptions" className="mt-4">
-                <div className="p-8 text-center">
-                  <p className="text-muted-foreground">Filter applied: Prescriptions</p>
+                <div className="relative w-full overflow-auto rounded-md border">
+                  <table className="w-full caption-bottom text-sm">
+                    <thead className="[&_tr]:border-b">
+                      <tr className="border-b">
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Patient</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Provider</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
+                        <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {records.map((record) => (
+                        <tr key={record.id} className="border-b">
+                          <td className="p-4 align-middle font-medium">{record.patientName}</td>
+                          <td className="p-4 align-middle">{record.date}</td>
+                          <td className="p-4 align-middle">{record.provider}</td>
+                          <td className="p-4 align-middle">{getStatusBadge(record.status)}</td>
+                          <td className="p-4 align-middle">
+                            <div className="flex space-x-2">
+                              <Button variant="ghost" size="sm">View</Button>
+                              <Button variant="ghost" size="sm">Edit</Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </TabsContent>
             </Tabs>
@@ -283,6 +462,85 @@ const MedicalRecords = () => {
           </CardFooter>
         </Card>
       </div>
+
+      <Dialog open={showNewRecordDialog} onOpenChange={setShowNewRecordDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Medical Record</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Patient</label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select patient" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="john-doe">John Doe</SelectItem>
+                      <SelectItem value="emily-wilson">Emily Wilson</SelectItem>
+                      <SelectItem value="robert-garcia">Robert Garcia</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Record Type</label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="clinical-notes">Clinical Notes</SelectItem>
+                      <SelectItem value="lab-results">Lab Results</SelectItem>
+                      <SelectItem value="radiology">Radiology</SelectItem>
+                      <SelectItem value="prescription">Prescription</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Date</label>
+                  <Input type="date" defaultValue={new Date().toISOString().split('T')[0]} />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Provider</label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select provider" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="dr-johnson">Dr. Sarah Johnson</SelectItem>
+                      <SelectItem value="dr-chen">Dr. Michael Chen</SelectItem>
+                      <SelectItem value="dr-wilson">Dr. James Wilson</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Notes</label>
+                <textarea 
+                  className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  placeholder="Enter medical record details"
+                ></textarea>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-2 mt-6">
+              <Button variant="outline" onClick={() => setShowNewRecordDialog(false)}>Cancel</Button>
+              <Button onClick={() => {
+                toast.success("Medical record created successfully");
+                setShowNewRecordDialog(false);
+              }}>
+                Create Record
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 };

@@ -2,11 +2,14 @@
 import React, { useState } from 'react';
 import AppLayout from '@/components/Layout/AppLayout';
 import PatientCard, { PatientData } from '@/components/Patients/PatientCard';
+import PatientDetail from '@/components/Patients/PatientDetail';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Search, UserPlus } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Plus, Search, UserPlus, Filter } from 'lucide-react';
+import { toast } from 'sonner';
 
 // Mock patient data
 const mockPatients: PatientData[] = [
@@ -99,6 +102,8 @@ const mockPatients: PatientData[] = [
 const Patients = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
+  const [selectedPatient, setSelectedPatient] = useState<PatientData | null>(null);
+  const [showAddDialog, setShowAddDialog] = useState(false);
   
   const filteredPatients = mockPatients.filter(patient => {
     // Filter by search term
@@ -114,6 +119,18 @@ const Patients = () => {
     return matchesSearch && matchesStatus;
   });
 
+  const handlePatientClick = (patient: PatientData) => {
+    setSelectedPatient(patient);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedPatient(null);
+  };
+
+  const handleAddPatient = () => {
+    setShowAddDialog(true);
+  };
+
   return (
     <AppLayout title="Patient Management">
       <div className="flex flex-col space-y-6">
@@ -125,7 +142,7 @@ const Patients = () => {
             </p>
           </div>
           
-          <Button>
+          <Button onClick={handleAddPatient}>
             <UserPlus className="mr-2 h-4 w-4" />
             Add Patient
           </Button>
@@ -142,45 +159,79 @@ const Patients = () => {
             />
           </div>
           
-          <div>
-            <Label className="sr-only">Filter by status</Label>
-            <Tabs 
-              defaultValue="all" 
-              className="w-full sm:w-auto"
-              onValueChange={setActiveFilter}
-            >
-              <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="new">New</TabsTrigger>
-                <TabsTrigger value="urgent">Urgent</TabsTrigger>
-              </TabsList>
-            </Tabs>
+          <div className="flex gap-2">
+            <div>
+              <Label className="sr-only">Filter by status</Label>
+              <Tabs 
+                defaultValue="all" 
+                className="w-full sm:w-auto"
+                onValueChange={setActiveFilter}
+              >
+                <TabsList>
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="active">Active</TabsTrigger>
+                  <TabsTrigger value="new">New</TabsTrigger>
+                  <TabsTrigger value="urgent">Urgent</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+            
+            <Button variant="outline">
+              <Filter className="h-4 w-4 mr-2" />
+              More Filters
+            </Button>
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredPatients.length > 0 ? (
-            filteredPatients.map(patient => (
-              <PatientCard key={patient.id} patient={patient} />
-            ))
-          ) : (
-            <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-              <div className="rounded-full p-3 bg-muted">
-                <Search className="h-6 w-6 text-muted-foreground" />
+        {selectedPatient ? (
+          <PatientDetail patient={selectedPatient} onClose={handleCloseDetail} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredPatients.length > 0 ? (
+              filteredPatients.map(patient => (
+                <PatientCard 
+                  key={patient.id} 
+                  patient={patient} 
+                  onViewDetails={handlePatientClick}
+                />
+              ))
+            ) : (
+              <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+                <div className="rounded-full p-3 bg-muted">
+                  <Search className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <h3 className="mt-4 text-lg font-medium">No patients found</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Try adjusting your search or filters to find what you're looking for.
+                </p>
+                <Button variant="outline" className="mt-4" onClick={handleAddPatient}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add New Patient
+                </Button>
               </div>
-              <h3 className="mt-4 text-lg font-medium">No patients found</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Try adjusting your search or filters to find what you're looking for.
-              </p>
-              <Button variant="outline" className="mt-4">
-                <Plus className="mr-2 h-4 w-4" />
-                Add New Patient
+            )}
+          </div>
+        )}
+      </div>
+
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent className="sm:max-w-md">
+          <div className="p-4 text-center">
+            <h2 className="text-lg font-semibold">Add New Patient</h2>
+            <p className="text-muted-foreground mt-1">
+              This is a placeholder. Form fields would go here in a real implementation.
+            </p>
+            <div className="mt-4">
+              <Button className="w-full" onClick={() => {
+                toast.success("Patient creation functionality will be implemented in a future update");
+                setShowAddDialog(false);
+              }}>
+                Save Patient
               </Button>
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 };
