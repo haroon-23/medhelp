@@ -3,14 +3,14 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { User, Shield, Calendar, LogOut } from 'lucide-react';
+import { User, Shield, Calendar, LogOut, FileText } from 'lucide-react';
 
 const RoleSelector = () => {
   const navigate = useNavigate();
 
   const handleRoleSelect = (role: string) => {
     localStorage.setItem('userRole', role);
-    navigate('/dashboard');
+    navigate(role === 'patient' ? '/patient/dashboard' : '/dashboard');
   };
 
   return (
@@ -26,6 +26,17 @@ const RoleSelector = () => {
 
       <div className="flex flex-col space-y-6">
         {[
+          {
+            title: "Patient",
+            icon: <User className="h-10 w-10 text-green-600" />,
+            iconBg: "bg-green-100",
+            description: "Access your medical records, appointments, and prescriptions",
+            features: [
+              { icon: <FileText className="h-4 w-4 text-green-600" />, text: "Medical records" },
+              { icon: <Calendar className="h-4 w-4 text-green-600" />, text: "Appointments" }
+            ],
+            role: "patient"
+          },
           {
             title: "Doctor",
             icon: <User className="h-10 w-10 text-blue-600" />,

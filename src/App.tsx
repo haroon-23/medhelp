@@ -17,6 +17,14 @@ import VoiceBotAnalytics from "./pages/VoiceBotAnalytics";
 import NotFound from "./pages/NotFound";
 import './components/Chat/chatbot.css';
 
+// Patient routes
+import PatientDashboard from "./pages/patient/Dashboard";
+import PatientAppointments from "./pages/patient/Appointments";
+import PatientRecords from "./pages/patient/Records";
+import PatientPrescriptions from "./pages/patient/Prescriptions";
+import PatientMessages from "./pages/patient/Messages";
+import PatientNotifications from "./pages/patient/Notifications";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -27,6 +35,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          
+          {/* Staff/Doctor/Admin Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/patients" element={<Patients />} />
           <Route path="/patient-onboarding" element={<PatientOnboarding />} />
@@ -36,6 +46,15 @@ const App = () => (
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/voice-analytics" element={<VoiceBotAnalytics />} />
+          
+          {/* Patient Routes */}
+          <Route path="/patient/dashboard" element={<PatientDashboard />} />
+          <Route path="/patient/appointments" element={<PatientAppointments />} />
+          <Route path="/patient/records" element={<PatientRecords />} />
+          <Route path="/patient/prescriptions" element={<PatientPrescriptions />} />
+          <Route path="/patient/messages" element={<PatientMessages />} />
+          <Route path="/patient/notifications" element={<PatientNotifications />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

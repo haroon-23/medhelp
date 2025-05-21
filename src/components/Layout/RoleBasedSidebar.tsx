@@ -13,7 +13,10 @@ import {
   Shield, 
   Wallet, 
   Headphones,
-  LogOut
+  LogOut,
+  Prescription,
+  MessageSquare,
+  Bell
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -39,6 +42,15 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
       { icon: Calendar, label: 'Appointments', path: '/appointments' },
     ];
 
+    const patientItems = [
+      { icon: Home, label: 'Dashboard', path: '/patient/dashboard' },
+      { icon: Calendar, label: 'My Appointments', path: '/patient/appointments' },
+      { icon: FileText, label: 'Medical Records', path: '/patient/records' },
+      { icon: Prescription, label: 'Prescriptions', path: '/patient/prescriptions' },
+      { icon: MessageSquare, label: 'Messages', path: '/patient/messages' },
+      { icon: Bell, label: 'Notifications', path: '/patient/notifications' },
+    ];
+
     const doctorItems = [
       ...commonItems,
       { icon: Users, label: 'Patients', path: '/patients' },
@@ -57,6 +69,8 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
     ];
 
     switch (userRole) {
+      case 'patient':
+        return patientItems;
       case 'doctor':
         return doctorItems;
       case 'admin':
@@ -69,6 +83,8 @@ const RoleBasedSidebar = ({ className }: SidebarProps) => {
 
   const getRoleTitle = () => {
     switch (userRole) {
+      case 'patient':
+        return 'Jane Smith';
       case 'doctor':
         return 'Dr. Sarah Johnson';
       case 'admin':
