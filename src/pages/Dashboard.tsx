@@ -147,12 +147,7 @@ const Dashboard = () => {
   const renderAIFeatures = () => {
     if (userRole === 'admin' || userRole === 'doctor') {
       return (
-        <>
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            <SOAPNotesGenerator />
-            <CalendarIntegration />
-          </div>
-          
+        <div className="space-y-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="space-y-1">
@@ -169,7 +164,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-3">
-                <Card className="bg-muted/50">
+                <Card className="bg-muted/50 hover:bg-muted/70 transition-colors">
                   <CardHeader className="pb-2">
                     <div className="p-2 w-10 h-10 bg-primary/10 rounded-lg mb-2">
                       <Bot className="h-6 w-6 text-primary" />
@@ -186,7 +181,7 @@ const Dashboard = () => {
                   </CardFooter>
                 </Card>
                 
-                <Card className="bg-muted/50">
+                <Card className="bg-muted/50 hover:bg-muted/70 transition-colors">
                   <CardHeader className="pb-2">
                     <div className="p-2 w-10 h-10 bg-primary/10 rounded-lg mb-2">
                       <Bot className="h-6 w-6 text-primary" />
@@ -203,7 +198,7 @@ const Dashboard = () => {
                   </CardFooter>
                 </Card>
                 
-                <Card className="bg-muted/50">
+                <Card className="bg-muted/50 hover:bg-muted/70 transition-colors">
                   <CardHeader className="pb-2">
                     <div className="p-2 w-10 h-10 bg-primary/10 rounded-lg mb-2">
                       <Bot className="h-6 w-6 text-primary" />
@@ -222,7 +217,12 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
-        </>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <SOAPNotesGenerator />
+            <CalendarIntegration />
+          </div>
+        </div>
       );
     }
     return null;
@@ -231,6 +231,7 @@ const Dashboard = () => {
   return (
     <AppLayout title="Dashboard">
       <div className="grid gap-6">
+        {/* Key Stats Section */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard 
             title="Total Patients" 
@@ -262,95 +263,108 @@ const Dashboard = () => {
           />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Patient Growth</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart 
-                  data={areaChartData} 
-                  categories={['patients']} 
-                  colors={['blue']} 
+        {/* Main Content - Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left column - 2/3 width */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Patient Growth</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart 
+                      data={areaChartData} 
+                      categories={['patients']} 
+                      colors={['blue']} 
+                    />
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Visits This Week</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart 
+                      data={barChartData} 
+                      categories={['total']} 
+                      colors={['blue']} 
+                    />
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+            
+            {/* Patient Summary Table */}
+            <PatientSummary />
+          </div>
+          
+          {/* Right column - 1/3 width */}
+          <div className="space-y-6">
+            {/* Calendar Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Calendar</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(selectedDate) => selectedDate && setDate(selectedDate)}
+                  className="w-full"
                 />
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Visits This Week</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart 
-                  data={barChartData} 
-                  categories={['total']} 
-                  colors={['blue']} 
-                />
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="md:col-span-2">
-            <CardHeader>
-              <CardTitle>Today's Appointments</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {todaysAppts.map((appt) => (
-                  <div key={appt.id} className="flex items-center p-3 border rounded-lg">
-                    <div className="mr-4 p-3 rounded-full bg-muted">
-                      <Users className="h-5 w-5 text-foreground" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">{appt.patient}</p>
-                      <div className="flex text-xs text-muted-foreground">
-                        <span>{appt.time}</span>
-                        <span className="mx-2">•</span>
-                        <span>{appt.type}</span>
+              </CardContent>
+              <CardFooter className="border-t">
+                <Button variant="ghost" className="w-full">View Schedule</Button>
+              </CardFooter>
+            </Card>
+            
+            {/* Today's Appointments Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Today's Appointments</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {todaysAppts.map((appt) => (
+                    <div key={appt.id} className="flex items-center p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="mr-4 p-3 rounded-full bg-muted">
+                        <Users className="h-5 w-5 text-foreground" />
                       </div>
+                      <div className="flex-1">
+                        <p className="font-medium">{appt.patient}</p>
+                        <div className="flex text-xs text-muted-foreground">
+                          <span>{appt.time}</span>
+                          <span className="mx-2">•</span>
+                          <span>{appt.type}</span>
+                        </div>
+                      </div>
+                      <Badge 
+                        variant="outline" 
+                        className={cn(
+                          appt.status === 'scheduled' && 'border-blue-500 text-blue-700 bg-blue-50',
+                          appt.status === 'completed' && 'border-green-500 text-green-700 bg-green-50',
+                          appt.status === 'cancelled' && 'border-red-500 text-red-700 bg-red-50'
+                        )}
+                      >
+                        {appt.status.charAt(0).toUpperCase() + appt.status.slice(1)}
+                      </Badge>
                     </div>
-                    <Badge 
-                      variant="outline" 
-                      className={cn(
-                        appt.status === 'scheduled' && 'border-blue-500 text-blue-700 bg-blue-50',
-                        appt.status === 'completed' && 'border-green-500 text-green-700 bg-green-50',
-                        appt.status === 'cancelled' && 'border-red-500 text-red-700 bg-red-50'
-                      )}
-                    >
-                      {appt.status.charAt(0).toUpperCase() + appt.status.slice(1)}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-            <CardFooter className="border-t">
-              <Button variant="ghost" className="w-full">View All Appointments</Button>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Calendar</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={(selectedDate) => selectedDate && setDate(selectedDate)}
-                className="w-full"
-              />
-            </CardContent>
-            <CardFooter className="border-t">
-              <Button variant="ghost" className="w-full">View Schedule</Button>
-            </CardFooter>
-          </Card>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter className="border-t">
+                <Button variant="ghost" className="w-full">View All Appointments</Button>
+              </CardFooter>
+            </Card>
+          </div>
         </div>
         
-        <PatientSummary />
-        
+        {/* AI Features Section - Conditional */}
         {renderAIFeatures()}
       </div>
     </AppLayout>
